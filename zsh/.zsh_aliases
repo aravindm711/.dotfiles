@@ -1,0 +1,9 @@
+alias gits='git status'
+alias gitss='git status -s'
+alias gitlo='git log --oneline'
+
+alias lc='colorls -lA --sd'
+
+alias cdocs='cd ~/Documents/Coding'
+alias cdesk='cd ~/Desktop/code'
+

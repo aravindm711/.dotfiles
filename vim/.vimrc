@@ -7,6 +7,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'tpope/vim-surround'
 Plug 'Valloric/YouCompleteMe'
 Plug 'junegunn/fzf.vim'
+Plug 'scrooloose/nerdtree'
 call plug#end()
 
 " ycm conf
@@ -21,7 +22,19 @@ let g:spacegray_low_contrast=1
 let g:spacegray_underline_search=1
 let g:spacegray_use_italices=1
 
+" nerdtree conf
+map <C-t> :NERDTreeToggle<CR>
+
 " general conf
+
+map <C-w> :w<CR>
+map <C-e> :wq<CR>
+
+let mapleader = ","
+
+noremap <leader>y "+y
+noremap <leader>p "+p
+
 filetype plugin indent on
 
 syntax enable
@@ -53,13 +66,13 @@ set ignorecase                  " Case-insensitive search...
 set smartcase                   " ...unless search contains uppercase letter
 
 " Indentation
-set smarttab                    " Better tabs
-set smartindent                 " Insert new level of indentation
+"set smarttab                    " Better tabs
 set autoindent                  " Copy indentation from previous line
+set smartindent
 set tabstop=4                   " Columns a tab counts for
 set softtabstop=4               " Columns a tab inserts in insert mode
-set shiftwidth=4                " Columns inserted with the reindent operations
-set shiftround                  " Always indent by multiple of shiftwidth
+"set shiftwidth=4                " Columns inserted with the reindent operations
+"set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
 
 " Key sequence timeout
@@ -76,8 +89,6 @@ set wrapmargin=0                " Turn off physical line wrapping
 set nojoinspaces                " Only one space when joining lines
 set formatoptions+=j            " Remove comment leader when joining lines
 
-" Scroll
-set sidescrolloff=3             " Keep at least 3 lines left/right
 set scrolloff=3                 " Keep at least 3 lines above/below
 
 " Mouse
