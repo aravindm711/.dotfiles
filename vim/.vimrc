@@ -1,29 +1,51 @@
 " vim-plug stuff
-call plug#begin('~/.vim/plugged')
-Plug 'tpope/vim-commentary'
-Plug 'bling/vim-airline'
-Plug 'airblade/vim-gitgutter'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'tpope/vim-surround'
-Plug 'Valloric/YouCompleteMe'
-Plug 'junegunn/fzf.vim'
-Plug 'scrooloose/nerdtree'
-call plug#end()
+if !empty(glob("~/.vim/autoload/plug.vim"))
+        call plug#begin('~/.vim/plugged')
+        Plug 'tpope/vim-commentary'
+        Plug 'bling/vim-airline'
+        Plug 'airblade/vim-gitgutter'
+        Plug 'terryma/vim-multiple-cursors'
+        Plug 'tpope/vim-surround'
+        Plug 'Valloric/YouCompleteMe'
+        Plug 'junegunn/fzf.vim'
+        Plug 'scrooloose/nerdtree'
+        Plug 'cocopon/iceberg.vim'
+        Plug 'tomasiser/vim-code-dark'
+        call plug#end()
+endif
 
-" ycm conf
-let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+" function to set all the plugin specific options
+function SetPluginOptions()
 
-" fzf conf
-set rtp+=/usr/local/opt/fzf
+        " ycm conf
+        if &rtp =~ 'YouCompleteMe'
+                let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+        endif
+        
+        " fzf conf
+        if &rtp =~ 'fzf'
+                set rtp+=/usr/local/opt/fzf
+        endif
+        
+        " nerdtree conf
+        if &rtp =~ 'nerdtree'
+                map <C-t> :NERDTreeToggle<CR>
+        endif
+        
+        if !empty(glob("~/.vim/plugged/vim-code-dark"))
+                let g:airline_theme = 'codedark'
+        endif
 
-" spacegray conf
-color spacegray
-let g:spacegray_low_contrast=1
-let g:spacegray_underline_search=1
-let g:spacegray_use_italices=1
+endfunction
 
-" nerdtree conf
-map <C-t> :NERDTreeToggle<CR>
+call SetPluginOptions()
+
+" color scheme
+if !empty(glob("~/.vim/plugged/iceberg.vim"))
+    colo iceberg
+else
+    colo industry
+endif
 
 " general conf
 
@@ -48,7 +70,6 @@ set hidden                      " Hide buffers instead of closing them
 set nofoldenable                " Disable folding
 set lazyredraw                  " Use lazy redrawing
 set number                      " Show line numbers
-set pastetoggle=<F2>            " Toggle paste mode with F2
 set ruler                       " Show ruler
 set showcmd                     " Show current command
 set showmatch                   " Show matching bracket/parenthesis/etc
@@ -66,13 +87,13 @@ set ignorecase                  " Case-insensitive search...
 set smartcase                   " ...unless search contains uppercase letter
 
 " Indentation
-"set smarttab                    " Better tabs
+set smarttab                    " Better tabs
 set autoindent                  " Copy indentation from previous line
-set smartindent
+set smartindent                 " Add indentation level
 set tabstop=4                   " Columns a tab counts for
 set softtabstop=4               " Columns a tab inserts in insert mode
-"set shiftwidth=4                " Columns inserted with the reindent operations
-"set shiftround                  " Always indent by multiple of shiftwidth
+set shiftwidth=4                " Columns inserted with the reindent operations
+set shiftround                  " Always indent by multiple of shiftwidth
 set expandtab                   " Always use spaces instead of tabs
 
 " Key sequence timeout
@@ -105,7 +126,7 @@ set splitright                  " Vertical split right
 
 " Spell checking
 set spelllang=en_us             " English as default language
-set nospell                       " Enable by default
+set nospell                     " Enable by default
 
 " History
 set history=1000                " Remember more commands
