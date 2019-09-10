@@ -4,6 +4,9 @@ alias gitlo='git log --oneline'
 
 alias lc='colorls -lA --sd'
 
-alias cdocs='cd ~/Documents/Coding'
+alias cdocs='cd ~/Documents/contest-archives'
 alias cdesk='cd ~/Desktop/code'
+alias ctest='cd ~/Desktop/code/test'
+
+alias netbeans='cd ~/src/incubating-netbeans-11.0-source; ./nbbuild/netbeans/bin/netbeans; cd'
 

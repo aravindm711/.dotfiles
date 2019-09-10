@@ -6,11 +6,12 @@ if !empty(glob("~/.vim/autoload/plug.vim"))
         Plug 'airblade/vim-gitgutter'
         Plug 'terryma/vim-multiple-cursors'
         Plug 'tpope/vim-surround'
-        Plug 'Valloric/YouCompleteMe'
+"        Plug 'Valloric/YouCompleteMe'
         Plug 'junegunn/fzf.vim'
         Plug 'scrooloose/nerdtree'
         Plug 'cocopon/iceberg.vim'
         Plug 'tomasiser/vim-code-dark'
+        Plug 'jeffkreeftmeijer/vim-numbertoggle'
         call plug#end()
 endif
 
@@ -48,6 +49,8 @@ else
 endif
 
 " general conf
+
+map <M-Space> <Esc>
 
 map <C-w> :w<CR>
 map <C-e> :wq<CR>
