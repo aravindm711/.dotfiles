@@ -1,3 +1,6 @@
+" tips
+" use :retab to convert all the tabs to spaces
+
 " vim-plug stuff
 if !empty(glob("~/.vim/autoload/plug.vim"))
         call plug#begin('~/.vim/plugged')
@@ -22,7 +25,7 @@ function SetPluginOptions()
         if &rtp =~ 'YouCompleteMe'
                 let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
         endif
-        
+
         " fzf conf
         if &rtp =~ 'fzf'
                 set rtp+=/usr/local/opt/fzf
@@ -31,6 +34,7 @@ function SetPluginOptions()
         " nerdtree conf
         if &rtp =~ 'nerdtree'
                 map <C-t> :NERDTreeToggle<CR>
+                nmap <leader>r :NERDTreeRefreshRoot
         endif
         
         if !empty(glob("~/.vim/plugged/vim-code-dark"))
@@ -52,7 +56,7 @@ endif
 
 map <M-Space> <Esc>
 
-map <C-w> :w<CR>
+map <C-l> :w<CR>
 map <C-e> :wq<CR>
 
 let mapleader = ","
