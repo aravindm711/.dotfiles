@@ -1,5 +1,31 @@
-" tips
-" use :retab to convert all the tabs to spaces
+"
+"
+"                                    /$$                              
+"                                   | $$                              
+"      /$$  /$$  /$$  /$$$$$$       | $$  /$$$$$$  /$$    /$$ /$$$$$$ 
+"     | $$ | $$ | $$ /$$__  $$      | $$ /$$__  $$|  $$  /$$//$$__  $$
+"     | $$ | $$ | $$| $$$$$$$$      | $$| $$  \ $$ \  $$/$$/| $$$$$$$$
+"     | $$ | $$ | $$| $$_____/      | $$| $$  | $$  \  $$$/ | $$_____/
+"     |  $$$$$/$$$$/|  $$$$$$$      | $$|  $$$$$$/   \  $/  |  $$$$$$$
+"      \_____/\___/  \_______/      |__/ \______/     \_/    \_______/
+"     
+"     
+"                        ██╗   ██╗██╗███╗   ███╗
+"                        ██║   ██║██║████╗ ████║
+"                        ██║   ██║██║██╔████╔██║
+"                        ╚██╗ ██╔╝██║██║╚██╔╝██║
+"                         ╚████╔╝ ██║██║ ╚═╝ ██║
+"                          ╚═══╝  ╚═╝╚═╝     ╚═╝
+"
+"
+" shortcuts:
+"
+" use ':retab' to convert all the tabs to spaces
+"
+" use 'mp' for markdown preview ; 'mpk' to kill preview server ; 'mpt' to
+" toggle preview server on or off
+"
+"
 
 " vim-plug stuff
 if !empty(glob("~/.vim/autoload/plug.vim"))
@@ -9,12 +35,14 @@ if !empty(glob("~/.vim/autoload/plug.vim"))
         Plug 'airblade/vim-gitgutter'
         Plug 'terryma/vim-multiple-cursors'
         Plug 'tpope/vim-surround'
-"        Plug 'Valloric/YouCompleteMe'
+        Plug 'Valloric/YouCompleteMe'
         Plug 'junegunn/fzf.vim'
-        Plug 'scrooloose/nerdtree'
         Plug 'cocopon/iceberg.vim'
         Plug 'tomasiser/vim-code-dark'
         Plug 'jeffkreeftmeijer/vim-numbertoggle'
+        Plug 'shime/vim-livedown'
+        Plug 'gabrielelana/vim-markdown'
+        Plug 'tpope/vim-vinegar'
         call plug#end()
 endif
 
@@ -24,21 +52,51 @@ function SetPluginOptions()
         " ycm conf
         if &rtp =~ 'YouCompleteMe'
                 let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+                let g:ycm_server_python_interpreter = '/usr/bin/python'
+                let g:ycm_python_binary_path = '/usr/bin/python'
+                
+                let g:ycm_complete_in_comments=1
+                let g:syntastic_error_symbol='>>'
+                let g:syntastic_warning_symbol='>'
+                let g:syntastic_check_on_open=1
+                let g:syntastic_check_on_wq=0
+                let g:syntastic_enable_highlighting=1
+                let g:syntastic_python_checkers=['pyflakes']
+
+                let g:ycm_filetype_whitelist = {
+                            \ "c":1,
+                            \ "cpp":1,
+                            \ "objc":1,
+                            \ "sh":1,
+                            \ "zsh":1,
+                            \ "python":1,
+                            \ "vim":1
+                            \ }
         endif
 
         " fzf conf
         if &rtp =~ 'fzf'
                 set rtp+=/usr/local/opt/fzf
         endif
-        
-        " nerdtree conf
-        if &rtp =~ 'nerdtree'
-                map <C-t> :NERDTreeToggle<CR>
-                nmap <leader>r :NERDTreeRefreshRoot
-        endif
-        
+
+        " status-line plugin
         if !empty(glob("~/.vim/plugged/vim-code-dark"))
                 let g:airline_theme = 'codedark'
+        endif
+
+        if &rtp =~ 'livedown'
+            " should markdown preview get shown automatically upon opening markdown buffer
+            let g:livedown_autorun = 0
+            " should the browser window pop-up upon previewing
+            let g:livedown_open = 1
+            " the port on which Livedown server will run
+            let g:livedown_port = 1337
+            " the browser to use, can also be firefox, chrome or other, depending on your executable
+            let g:livedown_browser = "chrome"
+
+            nmap mp :LivedownPreview<CR>
+            nmap mpk :LivedownKill<CR>
+            nmap mpt :LivedownToggle<CR>
         endif
 
 endfunction
@@ -64,9 +122,16 @@ let mapleader = ","
 noremap <leader>y "+y
 noremap <leader>p "+p
 
+nmap <leader>hh <C-w>h
+nmap <leader>l <C-w>l
+nmap <leader>j <C-w>j
+nmap <leader>k <C-w>k
+
 filetype plugin indent on
 
 syntax enable
+
+" set langmap=soSOdeDEfuFUgiGIhdHDjhJHktKTlnLN\;s\:S'-"_q'Q"w\,W<e.E>rpRPtyTYyfYFugUGicICorORpLpL[/{?]=}+z\;Z\:xqXQcjCJvkVKbxBXnbNB\,w<W.v>V/z?Z
 
 set tf                          " Fast terminal
 set cursorline                  " Highlight the cursor line
