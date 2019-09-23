@@ -42,7 +42,7 @@ if !empty(glob("~/.vim/autoload/plug.vim"))
         Plug 'jeffkreeftmeijer/vim-numbertoggle'
         Plug 'shime/vim-livedown'
         Plug 'gabrielelana/vim-markdown'
-        Plug 'tpope/vim-vinegar'
+        Plug 'mcchrish/nnn.vim'
         call plug#end()
 endif
 
@@ -52,8 +52,10 @@ function SetPluginOptions()
         " ycm conf
         if &rtp =~ 'YouCompleteMe'
                 let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+
                 let g:ycm_server_python_interpreter = '/usr/bin/python'
                 let g:ycm_python_binary_path = '/usr/bin/python'
+                let g:syntastic_python_checkers=['pyflakes']
                 
                 let g:ycm_complete_in_comments=1
                 let g:syntastic_error_symbol='>>'
@@ -61,7 +63,6 @@ function SetPluginOptions()
                 let g:syntastic_check_on_open=1
                 let g:syntastic_check_on_wq=0
                 let g:syntastic_enable_highlighting=1
-                let g:syntastic_python_checkers=['pyflakes']
 
                 let g:ycm_filetype_whitelist = {
                             \ "c":1,
@@ -99,9 +100,20 @@ function SetPluginOptions()
             nmap mpt :LivedownToggle<CR>
         endif
 
-endfunction
+        if &rtp =~ 'nnn'
+            let g:nnn#set_default_mappings=0
+    
+            nnoremap <silent> <leader>n :Np<CR>
+            nnoremap <leader>nn :Np '%:p:h'<CR>
 
-call SetPluginOptions()
+            let g:nnn#layout = { 'right': '~20%' }
+            let g:nnn#action = {
+                \ '<c-t>': 'tab split',
+                \ '<c-x>': 'split',
+                \ '<c-v>': 'vsplit'}
+        endif
+
+endfunction
 
 " color scheme
 if !empty(glob("~/.vim/plugged/iceberg.vim"))
@@ -110,28 +122,39 @@ else
     colo industry
 endif
 
+" netwr conf
+let g:netwr_liststyle=3
+let g:netwr_banner=0
+let g:netwr_browse_split=2
+let g:netwr_altv=1
+let g:netwr_winsize=20
+
 " general conf
 
-map <M-Space> <Esc>
+let mapleader = ","
+
+call SetPluginOptions()
+
+noremap <M-Space> <Esc>
 
 map <C-l> :w<CR>
 map <C-e> :wq<CR>
 
-let mapleader = ","
-
 noremap <leader>y "+y
 noremap <leader>p "+p
 
-nmap <leader>hh <C-w>h
-nmap <leader>l <C-w>l
-nmap <leader>j <C-w>j
-nmap <leader>k <C-w>k
+nmap <leader>t <C-w>h
+nmap <leader>s <C-w>l
+nmap <leader>r <C-w>j
+nmap <leader>v <C-w>k
 
 filetype plugin indent on
 
 syntax enable
 
 " set langmap=soSOdeDEfuFUgiGIhdHDjhJHktKTlnLN\;s\:S'-"_q'Q"w\,W<e.E>rpRPtyTYyfYFugUGicICorORpLpL[/{?]=}+z\;Z\:xqXQcjCJvkVKbxBXnbNB\,w<W.v>V/z?Z
+
+" set rn
 
 set tf                          " Fast terminal
 set cursorline                  " Highlight the cursor line
@@ -208,4 +231,3 @@ if has('persistent_undo')
     set undolevels=1000         " Max number of changes
     set undoreload=10000        " Max lines to save for undo on a buffer reload
 endif
-
