@@ -1,5 +1,4 @@
 "
-"
 "                                    /$$                              
 "                                   | $$                              
 "      /$$  /$$  /$$  /$$$$$$       | $$  /$$$$$$  /$$    /$$ /$$$$$$ 
@@ -8,8 +7,8 @@
 "     | $$ | $$ | $$| $$_____/      | $$| $$  | $$  \  $$$/ | $$_____/
 "     |  $$$$$/$$$$/|  $$$$$$$      | $$|  $$$$$$/   \  $/  |  $$$$$$$
 "      \_____/\___/  \_______/      |__/ \______/     \_/    \_______/
-"     
-"     
+"
+"
 "                        ██╗   ██╗██╗███╗   ███╗
 "                        ██║   ██║██║████╗ ████║
 "                        ██║   ██║██║██╔████╔██║
@@ -17,144 +16,192 @@
 "                         ╚████╔╝ ██║██║ ╚═╝ ██║
 "                          ╚═══╝  ╚═╝╚═╝     ╚═╝
 "
-"
-" shortcuts:
-"
-" use ':retab' to convert all the tabs to spaces
-"
-" use 'mp' for markdown preview ; 'mpk' to kill preview server ; 'mpt' to
-" toggle preview server on or off
-"
-"
+
+let mapleader = ','
 
 " vim-plug stuff
 if !empty(glob("~/.vim/autoload/plug.vim"))
-        call plug#begin('~/.vim/plugged')
-        Plug 'tpope/vim-commentary'
-        Plug 'bling/vim-airline'
-        Plug 'airblade/vim-gitgutter'
-        Plug 'terryma/vim-multiple-cursors'
-        Plug 'tpope/vim-surround'
-        Plug 'Valloric/YouCompleteMe'
-        Plug 'junegunn/fzf.vim'
-        Plug 'cocopon/iceberg.vim'
-        Plug 'tomasiser/vim-code-dark'
-        Plug 'jeffkreeftmeijer/vim-numbertoggle'
-        Plug 'shime/vim-livedown'
-        Plug 'gabrielelana/vim-markdown'
-        Plug 'mcchrish/nnn.vim'
-        call plug#end()
+    call plug#begin('~/.vim/plugged')
+    Plug 'bling/vim-airline'
+    Plug 'cocopon/iceberg.vim'
+    Plug 'gkeep/iceberg-dark'
+    Plug 'Valloric/YouCompleteMe'
+    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'preservim/nerdtree'
+    Plug 'sirver/ultisnips'
+    Plug 'junegunn/fzf.vim'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'tpope/vim-obsession'
+"        Plug 'mcchrish/nnn.vim'
+"        Plug 'terryma/vim-multiple-cursors'
+"        Plug 'tpope/vim-surround'
+"        Plug 'shime/vim-livedown'
+"        Plug 'tpope/vim-commentary'
+"        Plug 'gabrielelana/vim-markdown'
+    call plug#end()
 endif
 
 " function to set all the plugin specific options
 function SetPluginOptions()
 
-        " ycm conf
-        if &rtp =~ 'YouCompleteMe'
-                let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+    " ycm conf
+    if &rtp =~ 'YouCompleteMe'
+        let g:ycm_global_ycm_extra_conf = '~/.vim/conf-files/.ycm_extra_conf.py'
+        let g:ycm_server_python_interpreter = '/usr/bin/python3'
+        let g:ycm_python_binary_path = '/usr/bin/python3'
+        let g:syntastic_python_checkers=['pyflakes']
 
-                let g:ycm_server_python_interpreter = '/usr/bin/python'
-                let g:ycm_python_binary_path = '/usr/bin/python'
-                let g:syntastic_python_checkers=['pyflakes']
-                
-                let g:ycm_complete_in_comments=1
-                let g:syntastic_error_symbol='>>'
-                let g:syntastic_warning_symbol='>'
-                let g:syntastic_check_on_open=1
-                let g:syntastic_check_on_wq=0
-                let g:syntastic_enable_highlighting=1
+        let g:ycm_complete_in_comments=1
+        let g:syntastic_error_symbol='>>'
+        let g:syntastic_warning_symbol='>'
+        let g:syntastic_check_on_open=1
+        let g:syntastic_check_on_wq=0
+        let g:syntastic_enable_highlighting=1
 
-                let g:ycm_filetype_whitelist = {
-                            \ "c":1,
-                            \ "cpp":1,
-                            \ "objc":1,
-                            \ "sh":1,
-                            \ "zsh":1,
-                            \ "python":1,
-                            \ "vim":1
-                            \ }
-        endif
+        let g:ycm_autoclose_preview_window_after_completion = 1
+        let g:ycm_autoclose_preview_window_after_insertion = 1
 
-        " fzf conf
-        if &rtp =~ 'fzf'
-                set rtp+=/usr/local/opt/fzf
-        endif
+        let g:ycm_filetype_whitelist = {
+                    \ "c":1,
+                    \ "cpp":1,
+                    \ "objc":1,
+                    \ "sh":1,
+                    \ "zsh":1,
+                    \ "python":1,
+                    \ "vim":1
+                    \ }
+    endif
 
-        " status-line plugin
-        if !empty(glob("~/.vim/plugged/vim-code-dark"))
-                let g:airline_theme = 'codedark'
-        endif
+"     if &rtp =~ 'livedown'
+"         " should markdown preview get shown automatically upon opening markdown buffer
+"         let g:livedown_autorun = 0
+"         " should the browser window pop-up upon previewing
+"         let g:livedown_open = 1
+"         n server will run
+"         let g:livedown_port = 1337
+"         " the browser to use, can also be firefox, chrome or other, depending on your executable
+"         let g:livedown_browser = "safari"
+" 
+"         nnoremap mp :LivedownPreview<CR>
+"         nnoremap mpk :LivedownKill<CR>
+"         nnoremap mpt :LivedownToggle<CR>
+"     endif
 
-        if &rtp =~ 'livedown'
-            " should markdown preview get shown automatically upon opening markdown buffer
-            let g:livedown_autorun = 0
-            " should the browser window pop-up upon previewing
-            let g:livedown_open = 1
-            " the port on which Livedown server will run
-            let g:livedown_port = 1337
-            " the browser to use, can also be firefox, chrome or other, depending on your executable
-            let g:livedown_browser = "chrome"
+    " UltiSnips conf
+    if &rtp =~ 'ultisnips'
+        let g:UltiSnipsExpandTrigger="<C-c>"
+        let g:UltiSnipsJumpForwardTrigger="<C-f>"
+        let g:UltiSnipsJumpBackwardTrigger="<C-b>"
 
-            nmap mp :LivedownPreview<CR>
-            nmap mpk :LivedownKill<CR>
-            nmap mpt :LivedownToggle<CR>
-        endif
+        let g:UltiSnipsEditSplit="vertical"
+        let g:UltiSnipsSnippetDirectories=[$HOME . '/.vim/ultisnips']
+    endif
 
-        if &rtp =~ 'nnn'
-            let g:nnn#set_default_mappings=0
-    
-            nnoremap <silent> <leader>n :Np<CR>
-            nnoremap <leader>nn :Np '%:p:h'<CR>
+    if &rtp =~ 'nerdtree'
+        let g:NERDTreeWinPos = 'right'
+        let g:NERDTreeShowBookmarks = 1
 
-            let g:nnn#layout = { 'right': '~20%' }
-            let g:nnn#action = {
-                \ '<c-t>': 'tab split',
-                \ '<c-x>': 'split',
-                \ '<c-v>': 'vsplit'}
-        endif
+        nnoremap <leader>t<Space> :NERDTree<Space>
+        nnoremap <leader>tf :NERDTreeFocus<CR>
+        nnoremap <leader>tt :NERDTreeToggle<CR>
+        nnoremap <leader>tc :NERDTreeClose<CR>
+
+        autocmd bufenter * if (winnr("$") == 1  && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    endif
+
+    if &rtp =~ 'fzf'
+        set rtp+=/usr/local/opt/fzf
+        nnoremap <leader>f<space> :Files<CR>
+        nnoremap <leader>fl :Buffers<CR>
+        nnoremap <leader>fc :Commands<CR>
+        nnoremap <leader>fh :History<CR>
+    endif
+
+    if &rtp =~ 'iceberg'
+        colo iceberg
+    endif
+
+    if &rtp =~ 'airline'
+        let g:airline_theme = 'icebergDark'
+        let g:airline_powerline_fonts = 1
+    endif
+
+    if &rtp =~ 'obsession'
+        nnoremap <leader>ss :Obsession ~/.vim/sessions/<C-D>
+        nnoremap <leader>sp :Obsession<CR>
+        nnoremap <leader>sd :Obsession!<CR>
+    endif
 
 endfunction
 
-" color scheme
-if !empty(glob("~/.vim/plugged/iceberg.vim"))
-    colo iceberg
-else
-    colo industry
-endif
+" color scheme settings
+set background=dark
+set t_Co=256
+set t_ut=
 
 " netwr conf
-let g:netwr_liststyle=3
-let g:netwr_banner=0
-let g:netwr_browse_split=2
-let g:netwr_altv=1
-let g:netwr_winsize=20
+let g:netrw_banner=0
+let g:netrw_liststyle=3
+let g:netrw_browse_split=2
+let g:netrw_altv=1
+let g:netrw_winsize=20
 
 " general conf
 
-let mapleader = ","
+nnoremap <M-Space> <Esc>
+
+nnoremap <leader>s<space> :w<CR>
+nnoremap <C-e> :wq<CR>
+nnoremap <leader>e :q!<CR>
+
+vnoremap <leader>y "*y
+nnoremap <leader>p "*p
+
+nnoremap <leader>c :noh<CR>
+
+" Navigation Mappings
+
+" Text Navigation
+noremap <space> j
+noremap - k
+
+" Split Navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-n> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+
+" Session Mappings
+nnoremap <leader>sr :so ~/.vim/sessions/<C-D>
+nnoremap <leader>ss :mksession! ~/.vim/sessions/<C-D>
+nnoremap <leader>sn :echo v:this_session<CR>
+
+" ---------------------------------------------------------------------------- "
+
+" Open Input file in horizontal split
+nnoremap <leader>i<space> :sp _input.txt<CR> :resize 8<CR>
 
 call SetPluginOptions()
 
-noremap <M-Space> <Esc>
-
-map <C-l> :w<CR>
-map <C-e> :wq<CR>
-
-noremap <leader>y "+y
-noremap <leader>p "+p
-
-nmap <leader>t <C-w>h
-nmap <leader>s <C-w>l
-nmap <leader>r <C-w>j
-nmap <leader>v <C-w>k
+" Abbreviations
+iabbrev @g aravindmurali711@gmail.com
+iabbrev @y aravindmurali711@yahoo.com
 
 filetype plugin indent on
 
-syntax enable
+syntax on
 
 " set langmap=soSOdeDEfuFUgiGIhdHDjhJHktKTlnLN\;s\:S'-"_q'Q"w\,W<e.E>rpRPtyTYyfYFugUGicICorORpLpL[/{?]=}+z\;Z\:xqXQcjCJvkVKbxBXnbNB\,w<W.v>V/z?Z
 
-" set rn
+set previewpopup=height:10,width:60,highlight:PMenuSbar
+set completeopt+=popup
+set completepopup=height:15,width:60,border:off,highlight:PMenuSbar
+
+set autochdir                   " Change working directory to opened file
+
+set list
+set listchars=tab:>-,trail:~,extends:>,precedes:<,space:·
 
 set tf                          " Fast terminal
 set cursorline                  " Highlight the cursor line
@@ -170,6 +217,7 @@ set showcmd                     " Show current command
 set showmatch                   " Show matching bracket/parenthesis/etc
 set showmode                    " Show current mode
 set wildmenu
+set wildmode=full
 
 " Temp Files
 set nobackup                    " No backup file
@@ -180,12 +228,12 @@ set incsearch                   " Incremental search
 set hlsearch                    " Highlight matches
 set ignorecase                  " Case-insensitive search...
 set smartcase                   " ...unless search contains uppercase letter
+set showmatch matchtime=3
 
 " Indentation
 set smarttab                    " Better tabs
 set autoindent                  " Copy indentation from previous line
-set smartindent                 " Add indentation level
-set tabstop=4                   " Columns a tab counts for
+set tabstop=8                   " Columns a tab counts for
 set softtabstop=4               " Columns a tab inserts in insert mode
 set shiftwidth=4                " Columns inserted with the reindent operations
 set shiftround                  " Always indent by multiple of shiftwidth
@@ -198,18 +246,18 @@ set ttimeoutlen=0               " Disable key code delay
 " Wrapping
 set nowrap                      " Don't wrap long lines
 set linebreak                   " When wrapping, only at certain characters
-set textwidth=0                 " Turn off physical line wrapping
+set textwidth=80                " Turn off physical line wrapping
+set colorcolumn=+1
 set wrapmargin=0                " Turn off physical line wrapping
 
 " Joining
 set nojoinspaces                " Only one space when joining lines
 set formatoptions+=j            " Remove comment leader when joining lines
 
-set scrolloff=3                 " Keep at least 3 lines above/below
-
 " Mouse
 set mousehide                   " Hide mouse when typing
 set mouse=a                     " Enable mouse
+set scrolloff=3                 " Keep at least 3 lines above/below
 
 " Disable bell
 set visualbell                  " Disable visual bell

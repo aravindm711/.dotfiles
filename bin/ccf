@@ -9,9 +9,7 @@ function create_folder() {
         mkdir "$folder"
         cd "$folder"
         if [[ ${folder:0:5} == "Codef" ]]; then
-            touch "_input.txt" "a.cpp" "b.cpp" "c.cpp" "d.cpp"
-        else
-            touch "_input.txt"
+            touch "a.cpp" "b.cpp" "c.cpp" "d.cpp"
         fi
         exit
 }
@@ -54,7 +52,7 @@ elif [[ $1 == "-cc" ]] ; then
                         "lt") folder+="LunchTime";;
                         "co") folder+="CookOff";;
                 esac
-                folder+=`date | cut -d " " -f 7`
+                folder+=`date | rev | cut -d " " -f 1 | rev`
                 create_folder "$folder"
                 echo "$folder created"
         else

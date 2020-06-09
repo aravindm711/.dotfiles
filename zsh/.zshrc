@@ -2,7 +2,7 @@
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/aravindmurali/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -106,9 +106,39 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# export FZF_DEFAULT_OPTS="--preview 'head -100 {}'"
+export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
+    --preview 'head -100 {}' --preview-window right:50% \
+    --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899'"
 
 source ~/.zsh_aliases
 
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+
+# Override p10k config with Cyberpunk-neon config
+#POWERLEVEL9K_MODE="nerdfont-complete"
+#POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir rbenv vcs)
+#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs history battery time)
+#POWERLEVEL9K_CONTEXT_TEMPLATE=$'\ue795'
+#POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND='201'
+#POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='017'
+#POWERLEVEL9K_DIR_HOME_FOREGROUND='044'
+#POWERLEVEL9K_DIR_HOME_BACKGROUND='025'
+#POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND='044'
+#POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND='025'
+#POWERLEVEL9K_DIR_ETC_FOREGROUND='044'
+#POWERLEVEL9K_DIR_ETC_BACKGROUND='025'
+#POWERLEVEL9K_DIR_DEFAULT_FOREGROUND='044'
+#POWERLEVEL9K_DIR_DEFAULT_BACKGROUND='025'
+#POWERLEVEL9K_STATUS_OK_BACKGROUND='017'
+#POWERLEVEL9K_HISTORY_BACKGROUND='013'
+#POWERLEVEL9K_HISTORY_FOREGROUND='044'
+#POWERLEVEL9K_TIME_BACKGROUND='201'
+#POWERLEVEL9K_TIME_FOREGROUND='255'
+#POWERLEVEL9K_TIME_FORMAT='%D{%H:%M}'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
