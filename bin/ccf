@@ -1,6 +1,6 @@
-#!/bin/bash
+#! /bin/bash
 
-# A Bash script to create contest folders with input files and code files
+# bash script to create contest folders with input files and code files
 
 function create_folder() {
         echo "Creating folder $folder"

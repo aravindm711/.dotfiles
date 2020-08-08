@@ -1,7 +1,22 @@
-setlocal tabstop=4 softtabstop=4 shiftwidth=4
-setlocal autoindent
+" insert indented newline if surrounded by brackets
+function! InsertMapForEnter()
+    if pumvisible()
+        return "\<C-y>"
+    elseif strcharpart(getline('.'),getpos('.')[2]-1,1) == '}'
+        return "\<CR>\<CR>\<Esc>\<\<ki\<Tab>"
+    elseif strcharpart(getline('.'),getpos('.')[2]-1,1) == ')'
+        return "\<CR>\<CR>\<Esc>\<\<ki\<Tab>"
+    elseif strcharpart(getline('.'),getpos('.')[2]-1,1) == ']'
+        return "\<CR>\<CR>\<Esc>\<\<ki\<Tab>"
+    elseif strcharpart(getline('.'),getpos('.')[2]-1,2) == '</'
+        return "\<CR>\<CR>\<Esc>\<\<ki\<Tab>"
+    else
+        return "\<CR>"
+    endif
+endfunction
 
-nnoremap <leader>b :w \| :echo system("python3 " . bufname("%"))<CR>
+" run file with python3
+nnoremap <leader>b :w \| echo system("python3 " . bufname("%"))<CR>
 
-nnoremap <buffer> <leader>ic /sys.stdin<CR>0i#<esc>:noh<CR>:w<CR>
-nnoremap <buffer> <leader>iu /sys.stdin<CR>0x:noh<CR>:w<CR>
+" mappings for commenting and uncommenting input statements
+nnoremap <silent> <buffer> <leader>ic :g/sys.stdin/Commentary \| nohlsearch \| w \| normal ''<CR>

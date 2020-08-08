@@ -1,3 +1,6 @@
+setlocal cindent
+setlocal commentstring=//%s
+
 function Build()
     let l:output = system("g++ -std=c++17 -o binary " . bufname("%"))
     if l:output == ""
@@ -6,10 +9,8 @@ function Build()
     echo l:output
 endfunction
 
-setlocal cindent
-setlocal commentstring=//%s
+" compile and run file with c++17
+nnoremap <buffer> <leader>b :w \| call Build()<CR>
 
-nnoremap <buffer> <leader>b :w \| :call Build()<CR>
-
-nnoremap <buffer> <leader>ic /freopen<CR>0i//<esc>:noh<CR>:w<CR>
-nnoremap <buffer> <leader>iu /freopen<CR>0xx:noh<CR>:w<CR>
+" mappings for commenting and uncommenting input statements
+nnoremap <silent> <buffer> <leader>ic :g/freopen/Commentary \| nohlsearch \| w \| normal ''<CR>

@@ -1,16 +1,9 @@
 [color]
     ui = true
-[user]
-    name = Aravind Murali
-    email = aravindmurali711@gmail.com
 [filter "lfs"]
     process = git-lfs filter-process
     required = true
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
-[github]
-    user = aravindm711
 [core]
     editor = vim
-; [alias]
-
