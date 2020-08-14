@@ -75,12 +75,18 @@ function GetLoadedBuffers()
 endfunction
 
 " delete list of previously loaded buffers
-function DeletePrevSessionBuffers()
+function DeletePrevLoadedBuffers()
     for buffername in g:bufflist
         if bufexists(buffername)
             silent execute 'bwipeout ' . buffername
         endif
     endfor
+endfunction
+
+" delete all loaded buffers
+function DeleteLoadedBuffers()
+    call GetLoadedBuffers()
+    call DeletePrevLoadedBuffers()
 endfunction
 
 " start obsession while restoring a session
@@ -92,7 +98,7 @@ function SessionRestoreAndTrack(session)
         silent execute 'wa'
         call GetLoadedBuffers()
         silent execute 'source ' . a:session
-        call DeletePrevSessionBuffers()
+        call DeletePrevLoadedBuffers()
         execute 'Obsession ' . a:session
     endif
 endfunction
@@ -206,7 +212,8 @@ function SetPluginOptions()
         nnoremap <leader>pd :Dots<CR>
         nnoremap <leader>po :BMDirs<CR>
         nnoremap <leader>pf :FFFiles<CR>
-        nnoremap <leader>ps :FFLines<CR>
+        nnoremap <leader>pa :FFLines<CR>
+        nnoremap <leader>pc :FFBLines<CR>
         nnoremap <leader>pb :FFBuffers<CR>
     endif
 

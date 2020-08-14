@@ -1,5 +1,5 @@
 # cd into selected bookmarked directory
-bcd() {
+fcdb() {
     cd "$(cat "$HOME/.cdbookmark" | cut -d "|" -f 2 | fzf --preview="tree -L 2 {}")"
     zle accept-line
 }
@@ -49,12 +49,33 @@ bindkey '^w' backward-kill-word
 # open dotfiles for editing
 bindkey -s '^g' "dotbare fedit"^j
 
-# key-binding for bcd
-zle -N bcd
-bindkey '^o' bcd
+# key-binding for fcdb
+zle -N fcdb
+bindkey '^o' fcdb
+
+# fzf options
+export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
+    --preview 'bat --line-range :500 {}' --preview-window=:hidden \
+    --bind='space:toggle-preview' --bind='alt-s:toggle-sort' \
+    --bind='alt-a:toggle-all' --bind='alt-0:top' --bind='alt-i:jump' \
+    --bind='ctrl-alt-n:preview-page-down' --bind='ctrl-alt-p:preview-page-up'"
+    # --color fg:#ebdbb2,bg:#282828,fg+:#ebdbb2,bg+:#3c3836 \
+    # --color info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54"
+    # --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899'"
+
+export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 
 # source fzf.zsh plugin
 source ~/.fzf.zsh
+
+# slimline
+export SLIMLINE_PROMPT_VERSION=1
+export SLIMLINE_PROMPT_SYMBOL='࿗'
 
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
@@ -79,10 +100,11 @@ fi
 export EDITOR=vim
 export VISUAL=vim
 
-# export SLIMLINE_CWD_FORMAT='%F{cyan}%10<..<%~%<<%f'
+# slimline command prompt
 export SLIMLINE_CWD_FORMAT='%F{cyan}%1d%f'
+# export SLIMLINE_CWD_FORMAT='%F{cyan}%10<..<%~%<<%f'
 
-# source all command aliases
+# source alias commands file
 source ~/.zsh_aliases
 
 # don't display RPROMPT for previously accepted lines; only display it next to current line
