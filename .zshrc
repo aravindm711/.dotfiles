@@ -1,9 +1,3 @@
-# cd into selected bookmarked directory
-fcdb() {
-    cd "$(cat "$HOME/.cdbookmark" | cut -d "|" -f 2 | fzf --preview="tree -L 2 {}")"
-    zle accept-line
-}
-
 # fkill - kill processes - list only the ones you can kill.
 fkill() {
     local pid
@@ -21,12 +15,10 @@ fkill() {
 
 # update script for tools, using fzf
 fupdate() {
-    toollist=$(printf 'brew\npip3\nzgen' | fzf --multi)
+    toollist=$(printf 'pip3\nzgen' | fzf --multi)
     while read tool;
     do
-        if [ "$tool" = "brew" ]; then
-            brew upgrade `brew outdated` && brew cleanup
-        elif [ "$tool" = "pip3" ]; then
+        if [ "$tool" = "pip3" ]; then
             pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | grep -v 'pip' | xargs -n1 pip3 install -U
         elif [ "$tool" = "zgen" ]; then
             zgen update && zgen selfupdate
@@ -49,22 +41,15 @@ bindkey '^w' backward-kill-word
 # open dotfiles for editing
 bindkey -s '^g' "dotbare fedit"^j
 
-# key-binding for fcdb
-zle -N fcdb
-bindkey '^o' fcdb
-
 # fzf options
-export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.fdignore'"
+# export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.fdignore'"
 export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
     --preview 'bat --line-range :500 {}' --preview-window=:hidden \
     --bind='space:toggle-preview' --bind='alt-s:toggle-sort' \
     --bind='alt-a:toggle-all' --bind='alt-0:top' --bind='alt-i:jump' \
     --bind='ctrl-alt-n:preview-page-down' --bind='ctrl-alt-p:preview-page-up'"
-    # --color fg:#ebdbb2,bg:#282828,fg+:#ebdbb2,bg+:#3c3836 \
-    # --color info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54"
-    # --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899'"
 
-export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.fdignore'"
+# export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.fdignore'"
 export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -88,10 +73,7 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-autosuggestions
     zgen load zsh-users/zsh-completions
     zgen load mengelbrecht/slimline
-    zgen load mollifier/cd-bookmark
     zgen load wfxr/forgit
-    zgen load kazhala/dotbare
-    # zgen load urbainvaes/fzf-marks
 
     zgen save
 fi

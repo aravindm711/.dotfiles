@@ -1,16 +1,12 @@
 " let mapleader be ' ', ffs.
 let mapleader = ' '
 
-" build YouCompleteMe engine after every update
-function! BuildYCM(info)
-    " info is a dictionary with 3 fields
-    " - name:   name of the plugin
-    " - status: 'installed', 'updated', or 'unchanged'
-    " - force:  set on PlugInstall! or PlugUpdate!
-    if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
-        !python3 install.py --all
-    endif
-endfunction
+" install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 " vim-plug plugins
 if !empty(glob("$HOME/.vim/autoload/plug.vim"))
@@ -20,9 +16,9 @@ if !empty(glob("$HOME/.vim/autoload/plug.vim"))
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-obsession'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-unimpaired'
+    "Plug 'tpope/vim-obsession'
 
     " looks
     Plug 'morhetz/gruvbox'
@@ -30,27 +26,28 @@ if !empty(glob("$HOME/.vim/autoload/plug.vim"))
     Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
     " behaviour
-    Plug 'wesQ3/vim-windowswap'
+    "Plug 'wesQ3/vim-windowswap'
 
     " files
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
 
     " completion and linting
-    Plug 'dense-analysis/ale'
+    "Plug 'dense-analysis/ale'
     Plug 'lifepillar/vim-mucomplete'
-    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+    "Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 
     " snippets
-    Plug 'sirver/ultisnips'
+    "Plug 'sirver/ultisnips'
 
     " interesting
-    Plug 'itchyny/calendar.vim'
+    "Plug 'itchyny/calendar.vim'
 
     call plug#end()
 endif
 
 " insert indented newline if surrounded by brackets
-function InsertMapForEnter()
+function! InsertMapForEnter()
     if pumvisible()
         return "\<C-y>"
     elseif strcharpart(getline('.'),getpos('.')[2]-1,1) == '}'
@@ -67,7 +64,7 @@ function InsertMapForEnter()
 endfunction
 
 " get list of loaded buffers
-function GetLoadedBuffers()
+function! GetLoadedBuffers()
     let g:bufflist = []
     for bufinfo in getbufinfo()
         let g:bufflist += [bufinfo.name]
@@ -75,7 +72,7 @@ function GetLoadedBuffers()
 endfunction
 
 " delete list of previously loaded buffers
-function DeletePrevLoadedBuffers()
+function! DeletePrevLoadedBuffers()
     for buffername in g:bufflist
         if bufexists(buffername)
             silent execute 'bwipeout ' . buffername
@@ -84,33 +81,9 @@ function DeletePrevLoadedBuffers()
 endfunction
 
 " delete all loaded buffers
-function DeleteLoadedBuffers()
+function! DeleteLoadedBuffers()
     call GetLoadedBuffers()
     call DeletePrevLoadedBuffers()
-endfunction
-
-" start obsession while restoring a session
-function SessionRestoreAndTrack(session)
-    redraw
-    if v:this_session == a:session
-        echo 'selected session is already open'
-    else
-        silent execute 'wa'
-        call GetLoadedBuffers()
-        silent execute 'source ' . a:session
-        call DeletePrevLoadedBuffers()
-        execute 'Obsession ' . a:session
-    endif
-endfunction
-
-" obsess if session is detected, on entering vim
-function CheckIfSession()
-    if v:this_session != ''
-        let choice=input('session detected, do you want to start tracking [y/n]: ')
-        if choice == 'y'
-            execute 'Obsession ' . v:this_session
-        endif
-    endif
 endfunction
 
 " break line at the cursor
@@ -120,49 +93,7 @@ function! BreakHere()
 endfunction
 
 " plugin specific settings
-function SetPluginOptions()
-
-    " ycm conf
-    if &rtp =~ 'YouCompleteMe'
-        let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/.ycm_extra_conf.py'
-        " let g:ycm_server_python_interpreter = '/usr/local/opt/python@3.8/bin/python3'
-
-        let g:ycm_show_diagnostics_ui = 0
-        let g:ycm_autoclose_preview_window_after_completion = 1
-        let g:ycm_autoclose_preview_window_after_insertion = 1
-
-        let g:ycm_filetype_whitelist = {
-                                \ 'c': 1,
-                                \ 'cs': 1,
-                                \ 'js': 1,
-                                \ 'ts': 1,
-                                \ 'cpp': 1,
-                                \ 'python': 1,
-                                \ }
-
-        let g:ycm_auto_hover = ''
-        nmap <leader>yh <Plug>(YCMHover)
-
-        nnoremap <silent> <leader>gd :YcmCompleter GoTo<CR>
-        nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-
-        nnoremap <silent> <leader>yf :YcmCompleter FixIt<CR>
-        nnoremap <leader>yr :YcmCompleter RefactorRename<space>
-    endif
-
-    if &rtp =~ 'ale'
-        let g:ale_linters = {
-                    \ 'python': ['pyflakes'],
-                    \ }
-        let g:ale_lint_on_text_changed = 'never'
-        let g:ale_lint_on_insert_leave = 0
-        " let g:ale_lint_on_enter = 0
-
-        highlight clear ALEErrorSign
-        highlight clear ALEWarningSign
-
-        nnoremap <silent> <leader>l :ALELint<CR>
-    endif
+function! SetPluginOptions()
 
     if &rtp =~ 'ultisnips'
         let g:UltiSnipsExpandTrigger="<C-s>"
@@ -175,21 +106,11 @@ function SetPluginOptions()
 
     " fuzzy file finder conf
     if &rtp =~ 'fzf'
-        set rtp+=/usr/local/opt/fzf
+        set rtp+=~/.fzf
 
         command! Dots call fzf#run(fzf#wrap({
                     \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="$HOME/" "{print home \$0}"',
                     \ 'sink': 'e',
-                    \ }))
-
-        command! BMDirs call fzf#run(fzf#wrap({
-                    \ 'source': 'cat $HOME/.cdbookmark | cut -d "|" -f 2',
-                    \ 'sink': 'FFFiles',
-                    \ }))
-
-        command! SessionRestore call fzf#run(fzf#wrap({
-                    \ 'source': 'ls $HOME/.vim/sessions | grep .vim | xargs -I {} -n 1 echo $HOME/.vim/sessions/{}',
-                    \ 'sink': function('SessionRestoreAndTrack'),
                     \ }))
 
         let g:fzf_command_prefix = 'FF'
@@ -210,7 +131,6 @@ function SetPluginOptions()
 
         nnoremap <leader>pp :FF
         nnoremap <leader>pd :Dots<CR>
-        nnoremap <leader>po :BMDirs<CR>
         nnoremap <leader>pf :FFFiles<CR>
         nnoremap <leader>pa :FFLines<CR>
         nnoremap <leader>pc :FFBLines<CR>
@@ -229,31 +149,8 @@ function SetPluginOptions()
         let g:airline#extensions#tabline#enabled = 1
     endif
 
-    if &rtp =~ 'obsession'
-        augroup trackSession
-            autocmd!
-            autocmd VimEnter * :call CheckIfSession()
-        augroup END
-
-        nnoremap <leader>sr :SessionRestore<CR>
-        nnoremap <leader>ss :Obsession ~/.vim/sessions/<C-D>
-        nnoremap <leader>sp :Obsession
-    endif
-
-    if &rtp =~ 'vim-windowswap'
-        let g:windowswap_map_keys = 0 " prevent default bindings
-        nnoremap <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
-        nnoremap <leader>pw :call WindowSwap#DoWindowSwap()<CR>
-        nnoremap <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
-    endif
-
     if &rtp =~ 'vim-mucomplete'
-        let g:blacklist = ['c', 'cpp', 'cs', 'js', 'ts', 'py']
-        augroup StartMUcomplete
-            autocmd!
-            autocmd FileType * if index(g:blacklist, &ft) < 0 | silent execute 'MUcompleteAutoToggle'
-        augroup END
-
+        let g:mucomplete#enable_auto_at_startup = 1
         nnoremap <leader>mu :MUcompleteAutoToggle<CR>
     endif
 
@@ -309,7 +206,7 @@ nnoremap <leader>yd :call setreg("*", getcwd()) \| echo 'path copied to system c
 nnoremap <leader>i<space> :split _input.txt \| resize 8<CR>
 
 " on enter, insert selection if popup is visible or insert newline
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " faster scrolling
 nnoremap <C-e> 3<C-e>
@@ -331,15 +228,15 @@ set background=dark
 set noinfercase
 set shortmess+=c
 set belloff+=ctrlg
-set completeopt+=popup
 set completeopt+=menuone,noselect
+"set completeopt+=popup
 
 " popup behaivour
-set previewpopup=height:10,width:60,highlight:PMenuSbar
-set completepopup=height:15,width:60,border:off,highlight:PMenuSbar
+"set previewpopup=height:10,width:60,highlight:PMenuSbar
+"set completepopup=height:15,width:60,border:off,highlight:PMenuSbar
 
-set list
-set listchars=tab:→\ ,trail:×,extends:>,precedes:<,space:·
+"set list
+"set listchars=tab:→\ ,trail:×,extends:>,precedes:<,space:·
 
 set autochdir                   " Change working directory to opened file
 
@@ -389,7 +286,7 @@ set nowrap                      " Don't wrap long lines
 set linebreak                   " When wrapping, only at certain characters
 set textwidth=0                 " Turn off physical line wrapping
 set wrapmargin=0                " Turn off physical line wrapping
-set colorcolumn=+1
+"set colorcolumn=+1
 
 " Joining
 set nojoinspaces                " Only one space when joining lines

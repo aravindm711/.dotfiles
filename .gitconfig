@@ -7,3 +7,6 @@
     smudge = git-lfs smudge -- %f
 [core]
     editor = vim
+[user]
+    name = aravindm711
+    email = aravindmurali711@gmail.com
