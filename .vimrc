@@ -9,42 +9,35 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 " vim-plug plugins
-if !empty(glob("$HOME/.vim/autoload/plug.vim"))
-    call plug#begin('$HOME/.vim/plugged')
+call plug#begin('$HOME/.vim/plugged')
 
-    " tpope plugins
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-unimpaired'
-    "Plug 'tpope/vim-obsession'
+" tpope plugins
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-unimpaired'
+"Plug 'tpope/vim-obsession'
 
-    " looks
-    Plug 'morhetz/gruvbox'
-    Plug 'bling/vim-airline'
-    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" looks
+Plug 'morhetz/gruvbox'
+Plug 'bling/vim-airline'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
-    " behaviour
-    "Plug 'wesQ3/vim-windowswap'
+" files
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
-    " files
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
+" completion and linting
+Plug 'lifepillar/vim-mucomplete'
 
-    " completion and linting
-    "Plug 'dense-analysis/ale'
-    Plug 'lifepillar/vim-mucomplete'
-    "Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" snippets
+" Plug 'sirver/ultisnips'
 
-    " snippets
-    "Plug 'sirver/ultisnips'
+" interesting
+Plug 'itchyny/calendar.vim'
 
-    " interesting
-    "Plug 'itchyny/calendar.vim'
-
-    call plug#end()
-endif
+call plug#end()
 
 " insert indented newline if surrounded by brackets
 function! InsertMapForEnter()
@@ -205,9 +198,6 @@ nnoremap <leader>yd :call setreg("*", getcwd()) \| echo 'path copied to system c
 " open input file in horizontal split (cp)
 nnoremap <leader>i<space> :split _input.txt \| resize 8<CR>
 
-" on enter, insert selection if popup is visible or insert newline
-"inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
 " faster scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
@@ -229,14 +219,6 @@ set noinfercase
 set shortmess+=c
 set belloff+=ctrlg
 set completeopt+=menuone,noselect
-"set completeopt+=popup
-
-" popup behaivour
-"set previewpopup=height:10,width:60,highlight:PMenuSbar
-"set completepopup=height:15,width:60,border:off,highlight:PMenuSbar
-
-"set list
-"set listchars=tab:→\ ,trail:×,extends:>,precedes:<,space:·
 
 set autochdir                   " Change working directory to opened file
 

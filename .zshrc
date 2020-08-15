@@ -15,12 +15,10 @@ fkill() {
 
 # update script for tools, using fzf
 fupdate() {
-    toollist=$(printf 'pip3\nzgen' | fzf --multi)
+    toollist=$(printf 'zgen' | fzf --multi)
     while read tool;
     do
-        if [ "$tool" = "pip3" ]; then
-            pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | grep -v 'pip' | xargs -n1 pip3 install -U
-        elif [ "$tool" = "zgen" ]; then
+        if [ "$tool" = "zgen" ]; then
             zgen update && zgen selfupdate
         fi
     done <<< "$toollist"
@@ -42,14 +40,14 @@ bindkey '^w' backward-kill-word
 bindkey -s '^g' "dotbare fedit"^j
 
 # fzf options
-# export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_DEFAULT_COMMAND="find -type f"
 export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
     --preview 'bat --line-range :500 {}' --preview-window=:hidden \
     --bind='space:toggle-preview' --bind='alt-s:toggle-sort' \
     --bind='alt-a:toggle-all' --bind='alt-0:top' --bind='alt-i:jump' \
     --bind='ctrl-alt-n:preview-page-down' --bind='ctrl-alt-p:preview-page-up'"
 
-# export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_ALT_C_COMMAND="find -type d"
 export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
