@@ -56,9 +56,8 @@ export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 # source fzf.zsh plugin
 source ~/.fzf.zsh
 
-# slimline
-export SLIMLINE_PROMPT_VERSION=1
-export SLIMLINE_PROMPT_SYMBOL='࿗'
+# sfz-prompt
+PROMPT_SFZ_CHAR="࿗"
 
 # load zgen
 source "${HOME}/.zgen/zgen.zsh"
@@ -70,6 +69,7 @@ if ! zgen saved; then
     zgen load zdharma/fast-syntax-highlighting
     zgen load zsh-users/zsh-autosuggestions
     zgen load zsh-users/zsh-completions
+    zgen load mreinhardt/sfz-prompt.zsh
     zgen load mengelbrecht/slimline
     zgen load wfxr/forgit
 
@@ -79,10 +79,6 @@ fi
 # default editor for the shell
 export EDITOR=vim
 export VISUAL=vim
-
-# slimline command prompt
-export SLIMLINE_CWD_FORMAT='%F{cyan}%1d%f'
-# export SLIMLINE_CWD_FORMAT='%F{cyan}%10<..<%~%<<%f'
 
 # source alias commands file
 source ~/.zsh_aliases
