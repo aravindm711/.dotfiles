@@ -1,9 +1,7 @@
 bin|/Users/aravindmurali/bin
-vim-snippets|/Users/aravindmurali/.vim/ultisnips
-vim-ftplugin|/Users/aravindmurali/.vim/after/ftplugin
-cp_til|/Users/aravindmurali/Documents/cp/TIL
-cp_contests|/Users/aravindmurali/Documents/cp/contest-archives
-cp_practice|/Users/aravindmurali/Documents/cp/practice
+vim|/Users/aravindmurali/.vim
+config|/Users/aravindmurali/.config
+cp|/Users/aravindmurali/Documents/cp
 handy_code_dir|/Users/aravindmurali/Documents/code
 handy_test_dir|/Users/aravindmurali/Documents/code/test
 my_git_projects|/Users/aravindmurali/Documents/mein-git-projects

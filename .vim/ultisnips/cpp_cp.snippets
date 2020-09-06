@@ -1,9 +1,11 @@
-snippet initcpp "C++ template for cp"
+snippet initcpp "C++ template for cp" b
 # include <bits/stdc++.h>
 using namespace std;
 # define looptc                 int t, c=0; cin >> t; while(t--&&++c)
 # define ln                     "\n"
 # define ll                     long long
+
+$2
 
 int main() {
     ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
@@ -26,7 +28,6 @@ long long findgcd(long long a, long long b) {
 	}
 	return a;
 }
-$1
 endsnippet
 
 snippet isprime "Check if number is prime" b
@@ -37,9 +38,10 @@ bool isprime(long long a) {
 			++cnt;
 	
 	return (cnt >= 1: false? true);
+}
 endsnippet
 
-snippet getprimes "Get a list of Primes using sieve of eratosthenes"
+snippet getprimes "Get a list of Primes using sieve of eratosthenes" b
 bool* getprimes(long long x) {
 	bool primes_list = (bool*)malloc(x * sizeof(bool));
 	memeset(primes_list, true, x);

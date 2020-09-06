@@ -1,3 +1,4 @@
+# custom commands
 # cd into selected bookmarked directory
 fcdb() {
     cd "$(cat "$HOME/.cdbookmark" | cut -d "|" -f 2 | fzf --preview="tree -L 2 {}")"
@@ -35,6 +36,12 @@ fupdate() {
     exec zsh
 }
 
+# copy "The Sopranos" magnet link to clipboard
+ss() {
+    echo "magnet:?xt=urn:btih:15D3C9A633CFCF74DDF4466B96C3A5E5D599A035&dn=The+Sopranos+%281999%29+Season+1-6+S01-S06+%281080p+BluRay+x265+HEVC+10bit+AAC+5.1+ImE%29+%5BQxR%5D&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.zer0day.to%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fcoppersurfer.tk%3A6969%2Fannounce" | pbcopy
+}
+
+# key-bindings
 # vim bindings for shell
 bindkey -v
 bindkey '^a' beginning-of-line
@@ -53,31 +60,29 @@ bindkey -s '^g' "dotbare fedit"^j
 zle -N fcdb
 bindkey '^o' fcdb
 
+# conf
 # fzf options
-export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.config/fd/ignore'"
 export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
     --preview 'bat --line-range :500 {}' --preview-window=:hidden \
     --bind='space:toggle-preview' --bind='alt-s:toggle-sort' \
     --bind='alt-a:toggle-all' --bind='alt-0:top' --bind='alt-i:jump' \
     --bind='ctrl-alt-n:preview-page-down' --bind='ctrl-alt-p:preview-page-up'"
-    # --color fg:#ebdbb2,bg:#282828,fg+:#ebdbb2,bg+:#3c3836 \
-    # --color info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54"
-    # --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899'"
 
-export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.fdignore'"
+export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.config/fd/ignore'"
 export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 
-# source fzf.zsh plugin
-source ~/.fzf.zsh
+# default editor for the shell
+export EDITOR=vim
+export VISUAL=vim
 
-# slimline
-export SLIMLINE_PROMPT_VERSION=1
-export SLIMLINE_PROMPT_SYMBOL='࿗'
+# sfz-prompt
+PROMPT_SFZ_CHAR="࿗"
 
-# load zgen
+# zgen
 source "${HOME}/.zgen/zgen.zsh"
 
 # if the init script doesn't exist
@@ -87,28 +92,24 @@ if ! zgen saved; then
     zgen load zdharma/fast-syntax-highlighting
     zgen load zsh-users/zsh-autosuggestions
     zgen load zsh-users/zsh-completions
-    zgen load mengelbrecht/slimline
+    zgen load mreinhardt/sfz-prompt.zsh
     zgen load mollifier/cd-bookmark
-    zgen load wfxr/forgit
     zgen load kazhala/dotbare
-    # zgen load urbainvaes/fzf-marks
+    zgen load wfxr/forgit
 
     zgen save
 fi
 
-# default editor for the shell
-export EDITOR=vim
-export VISUAL=vim
+# source
+# fzf plugin
+source ~/.fzf.zsh
 
-# slimline command prompt
-export SLIMLINE_CWD_FORMAT='%F{cyan}%1d%f'
-# export SLIMLINE_CWD_FORMAT='%F{cyan}%10<..<%~%<<%f'
-
-# source alias commands file
+# shell aliases
 source ~/.zsh_aliases
+
+# setopt
+# limit correction only to commands
+setopt correct
 
 # don't display RPROMPT for previously accepted lines; only display it next to current line
 setopt transient_rprompt
-
-# limit correction only to commands
-setopt correct
