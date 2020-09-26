@@ -1,21 +1,14 @@
 " let mapleader be ' ', ffs.
 let mapleader = ' '
 
-syntax on
-filetype plugin indent on
-
 " vim-plug
 
-" build YouCompleteMe engine after every update
-function! BuildYCM(info)
-    " info is a dictionary with 3 fields
-    " - name:   name of the plugin
-    " - status: 'installed', 'updated', or 'unchanged'
-    " - force:  set on PlugInstall! or PlugUpdate!
-    if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
-        !python3 install.py --all
-    endif
-endfunction
+" install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 " vim-plug plugins
 call plug#begin('$HOME/.vim/plugged')
@@ -35,25 +28,13 @@ call plug#begin('$HOME/.vim/plugged')
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-unimpaired'
-    Plug 'wesQ3/vim-windowswap'
 
     " files
     Plug 'junegunn/fzf.vim'
-    " Plug 'justinmk/vim-dirvish'
+    Plug 'justinmk/vim-dirvish'
 
     " completion and linting
-    Plug 'dense-analysis/ale'
     Plug 'lifepillar/vim-mucomplete'
-    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
-
-    " snippets
-    Plug 'sirver/ultisnips'
-
-    " sessions
-    Plug 'tpope/vim-obsession'
-
-    " interesting
-    Plug 'itchyny/calendar.vim'
 
 call plug#end()
 
@@ -161,56 +142,8 @@ if has('persistent_undo')
     set undoreload=10000        " Max lines to save for undo on a buffer reload
 endif
 
-" fzf runtimepath
-set rtp+=/usr/local/opt/fzf
-
 " plugin conf
-
-" ycm
-let g:ycm_auto_hover = ''
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/.ycm_global_extra_conf.py'
-
-let g:ycm_filetype_whitelist = {
-                        \ 'c': 1,
-                        \ 'cs': 1,
-                        \ 'js': 1,
-                        \ 'ts': 1,
-                        \ 'cpp': 1,
-                        \ 'yaml': 1,
-                        \ 'python': 1,
-                        \ }
-
-" ale
-" let g:ale_lint_on_enter = 0
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_text_changed = 'never'
-
-let g:ale_linters = {
-            \ 'python': ['pyflakes'],
-            \ }
-
-highlight clear ALEErrorSign
-highlight clear ALEWarningSign
-
-" ultisnips
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsExpandTrigger="<C-s>"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/ultisnips']
-
 " fuzzy file finder
-command! BMDirs call fzf#run(fzf#wrap({
-            \ 'source': 'cat $HOME/.cdbookmark | cut -d "|" -f 2',
-            \ 'sink': 'FFFiles',
-            \ }))
-
-command! SessionRestore call fzf#run(fzf#wrap({
-            \ 'source': 'ls $HOME/.vim/sessions | grep .vim | xargs -I {} -n 1 echo $HOME/.vim/sessions/{}',
-            \ 'sink': function('SessionRestoreAndTrack'),
-            \ }))
-
 command! Dots call fzf#run(fzf#wrap({
             \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="$HOME/" "{print home \$0}"',
             \ 'sink': 'e',
@@ -246,9 +179,6 @@ let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#dirvish#enabled = 1
 
-" window-swap
-let g:windowswap_map_keys = 0 " prevent default bindings
-
 " general conf
 " netrw
 let g:netrw_altv=1
@@ -278,10 +208,10 @@ inoremap <, <><left>
 inoremap <expr> .<CR> InsertMapForEnter()
 
 " split navigation
-" nnoremap <C-h> <C-w>h
-" nnoremap <C-l> <C-w>l
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
 
 " open alternate file
 nnoremap <leader>a <C-^>
@@ -309,53 +239,18 @@ nnoremap <C-y> 3<C-y>
 nnoremap S :<C-u>call BreakHere()<CR>
 
 " plugin mappings
-" ycm
-nmap <leader>yh <Plug>(YCMHover)
-
-nnoremap <silent> <leader>gd :YcmCompleter GoTo<CR>
-nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-
-nnoremap <silent> <leader>yf :YcmCompleter FixIt<CR>
-nnoremap <leader>yr :YcmCompleter RefactorRename<space>
-
-" ale
-nnoremap <silent> <leader>l :ALELint<CR>
-
 " fuzzy file finder
 nnoremap <leader>pp :FF
 nnoremap <leader>pd :Dots<CR>
-nnoremap <leader>po :BMDirs<CR>
 nnoremap <leader>pf :FFFiles<CR>
 nnoremap <leader>pa :FFLines<CR>
 nnoremap <leader>pc :FFBLines<CR>
 nnoremap <leader>pb :FFBuffers<CR>
 
-" obsession
-nnoremap <leader>sp :Obsession
-nnoremap <leader>sr :SessionRestore<CR>
-nnoremap <leader>ss :Obsession ~/.vim/sessions/<C-D>
-
-" window-swap
-nnoremap <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
-nnoremap <leader>pw :call WindowSwap#DoWindowSwap()<CR>
-nnoremap <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
-
 " mu-complete
 nnoremap <leader>mu :MUcompleteAutoToggle<CR>
 
 " autocmds
-" track session if detected, on entering
-augroup TrackSession
-    autocmd!
-    autocmd VimEnter * :call CheckIfSession()
-augroup END
-
-" autostart mu-complete only for whitelist ft
-augroup AutoStartMUcomplete
-    autocmd!
-    autocmd FileType * if index(keys(g:ycm_filetype_whitelist), &ft) < 0 | silent execute 'MUcompleteAutoToggle'
-augroup END
-
 " autosave folds
 augroup AutoSaveFolds
   autocmd!
