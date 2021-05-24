@@ -11,7 +11,7 @@ function! InsertMapForEnter()
     elseif strcharpart(getline('.'),getpos('.')[2]-1,2) == '</'
         return "\<CR>\<Esc>O"
     else
-        return "\<CR>"
+        return ".\<CR>"
     endif
 endfunction
 

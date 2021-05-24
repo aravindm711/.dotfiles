@@ -18,6 +18,32 @@ int main() {
 }
 endsnippet
 
+snippet ll_struct "basic struct for linked list" b
+struct Node {
+    int data;
+    struct Node* next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+
+struct Node* get_ll(int n) {
+    int x;
+    cin >> x;
+    struct Node *head = new Node(x);
+    struct Node *tail = head;
+    for (int i=1; i<n; ++i) {
+        cin >> x;
+        tail->next = new Node(x);
+        tail = tail->next;
+    }
+
+    return head;
+}$1
+endsnippet
+
 snippet fgcd "Return long long gcd of numbers a and b" b
 long long findgcd(long long a, long long b) {
 	while (b) {

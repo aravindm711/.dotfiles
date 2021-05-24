@@ -1,15 +1,22 @@
 # generla shell command aliases
-alias la='ls -lA'
+alias ..='cd ..'
+alias ...='cd ...'
+alias la='ls -ap'
 alias ez='exec zsh'
 
 # use c++17 compiler for cpp
 alias g17='g++ -std=c++17'
 
+# python related aliases
+alias p3='pip3'
+alias py='python3'
+alias py38='/usr/local/opt/python@3.8/bin/python3'
+
 # bookmark dir plugin
 alias cdb='cd-bookmark'
 
 # run macho script
-alias macho='bash ~/macho.sh'
+alias macho='bash ~/macho-macos.sh'
 
 # third-party plugins
 alias dots='dotbare'
@@ -18,3 +25,5 @@ alias mux='tmuxinator'
 # get rickrolled
 alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
 
+# magnet links
+alias ms='cat ~/Downloads/Illegit/magnets.txt | fzf --exact | cut -d "," -f 2 | pbcopy'

@@ -1,10 +1,15 @@
+" {{{ nocompatible
+if &compatible
+    set nocompatible
+endif
+" }}}
+
 " let mapleader be ' ', ffs.
 let mapleader = ' '
 
-syntax on
-filetype plugin indent on
+" {{{ vim-plug
 
-" vim-plug
+" vim-plug sets filetype plugin indent on | syntax on
 
 " build YouCompleteMe engine after every update
 function! BuildYCM(info)
@@ -12,56 +17,61 @@ function! BuildYCM(info)
     " - name:   name of the plugin
     " - status: 'installed', 'updated', or 'unchanged'
     " - force:  set on PlugInstall! or PlugUpdate!
-    if a:info.status == 'installed' || a:info.status == 'updated' || a:info.force
+    if a:info.status == 'installed' || a:info.force " a:info.status == 'updated'
         !python3 install.py --all
     endif
 endfunction
 
-" vim-plug plugins
+" plugins
 call plug#begin('$HOME/.vim/plugged')
 
-    " git
-    Plug 'junegunn/gv.vim'
-    Plug 'tpope/vim-fugitive'
+" git
+Plug 'junegunn/gv.vim'
+Plug 'tpope/vim-fugitive'
 
-    " looks
-    Plug 'morhetz/gruvbox'
-    Plug 'bling/vim-airline'
-    Plug 'mhinz/vim-startify'
-    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+" looks
+Plug 'morhetz/gruvbox'
+Plug 'bling/vim-airline'
+Plug 'mhinz/vim-startify'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
 
-    " behaviour
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-unimpaired'
-    Plug 'wesQ3/vim-windowswap'
+" features
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-unimpaired'
+Plug 'wesQ3/vim-windowswap'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
+Plug 'sotte/presenting.vim'
 
-    " files
-    Plug 'junegunn/fzf.vim'
-    " Plug 'justinmk/vim-dirvish'
+" files
+Plug 'junegunn/fzf.vim'
+Plug '/usr/local/opt/fzf'
+Plug 'justinmk/vim-dirvish'
 
-    " completion and linting
-    Plug 'dense-analysis/ale'
-    Plug 'lifepillar/vim-mucomplete'
-    Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" completion, linting, formatting
+Plug 'sbdchd/neoformat'
+Plug 'dense-analysis/ale'
+Plug 'lifepillar/vim-mucomplete'
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 
-    " snippets
-    Plug 'sirver/ultisnips'
+" snippets
+Plug 'sirver/ultisnips'
 
-    " sessions
-    Plug 'tpope/vim-obsession'
-
-    " interesting
-    Plug 'itchyny/calendar.vim'
+" sessions
+Plug 'tpope/vim-obsession'
 
 call plug#end()
+" }}}
 
-" 'set'tings
+" {{{ 'set'tings
 " color settings
 set t_ut=
 set t_Co=256
 set background=dark
+
+" use number column for signs
+" set signcolumn=number
 
 " completion behaviour
 set noinfercase
@@ -69,6 +79,8 @@ set shortmess+=c
 set belloff+=ctrlg
 set completeopt+=popup
 set completeopt+=menuone,noselect
+
+set vb t_vb=
 
 " popup behaivour
 set previewpopup=height:10,width:60,highlight:PMenuSbar
@@ -103,6 +115,7 @@ set wildmode=full
 " Temp Files
 set nobackup                    " No backup file
 set noswapfile                  " No swap file
+set nowritebackup               " No write backup
 
 " Search
 set incsearch                   " Incremental search
@@ -138,7 +151,7 @@ set formatoptions+=j            " Remove comment leader when joining lines
 " Mouse
 set mousehide                   " Hide mouse when typing
 set mouse=a                     " Enable mouse
-set scrolloff=3                 " Keep at least 3 lines above/below
+set scrolloff=2                 " Keep at least 3 lines above/below
 
 " Disable bell
 set visualbell                  " Disable visual bell
@@ -160,28 +173,41 @@ if has('persistent_undo')
     set undolevels=1000         " Max number of changes
     set undoreload=10000        " Max lines to save for undo on a buffer reload
 endif
+" }}}
 
-" fzf runtimepath
-set rtp+=/usr/local/opt/fzf
+" {{{ plugin conf
+" neoformat
+" Enable trimmming of trailing whitespace
+let g:neoformat_basic_format_trim = 1
 
-" plugin conf
+let g:neoformat_python_black = {
+            \ 'exe': 'black',
+            \ 'args': ['-', '--line-length 119',],
+            \ 'stdin': 1,
+            \ }
+
+let g:neoformat_try_formatprg = 1
+let g:neoformat_enabled_python = ['black', 'isort', 'docformatter']
+let g:neoformat_enabled_javascript = ['prettier']
 
 " ycm
 let g:ycm_auto_hover = ''
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_global_ycm_extra_conf = $HOME.'/.vim/.ycm_global_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_global_extra_conf.py'
+
+" let g:ycm_server_python_interpreter = '/usr/local/Cellar/python@3.8/3.8.5/bin/python3'
 
 let g:ycm_filetype_whitelist = {
-                        \ 'c': 1,
-                        \ 'cs': 1,
-                        \ 'js': 1,
-                        \ 'ts': 1,
-                        \ 'cpp': 1,
-                        \ 'yaml': 1,
-                        \ 'python': 1,
-                        \ }
+            \ 'c': 1,
+            \ 'cs': 1,
+            \ 'js': 1,
+            \ 'ts': 1,
+            \ 'cpp': 1,
+            \ 'yaml': 1,
+            \ 'python': 1,
+            \ }
 
 " ale
 " let g:ale_lint_on_enter = 0
@@ -190,6 +216,7 @@ let g:ale_lint_on_text_changed = 'never'
 
 let g:ale_linters = {
             \ 'python': ['pyflakes'],
+            \ 'javascript': ['eslint'],
             \ }
 
 highlight clear ALEErrorSign
@@ -249,16 +276,16 @@ let g:airline#extensions#dirvish#enabled = 1
 " window-swap
 let g:windowswap_map_keys = 0 " prevent default bindings
 
-" general conf
 " netrw
 let g:netrw_altv=1
 let g:netrw_banner=0
 let g:netrw_winsize=10
 let g:netrw_liststyle=3
 let g:netrw_browse_split=2
+" }}}
 
-" mappings
-" general mappings
+" {{{ mappings
+" {{{2 general mappings
 nnoremap <M-Space> <Esc>
 
 " quit mappings
@@ -274,14 +301,15 @@ inoremap (, ()<left>
 inoremap [, []<left>
 inoremap <, <><left>
 
-" insert indented newline
-inoremap <expr> .<CR> InsertMapForEnter()
+" visual mode
+vnoremap > >gv
+vnoremap < <gv
 
 " split navigation
-" nnoremap <C-h> <C-w>h
-" nnoremap <C-l> <C-w>l
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
 
 " open alternate file
 nnoremap <leader>a <C-^>
@@ -292,23 +320,30 @@ nnoremap <leader>sn :echo v:this_session<CR>
 " clear highlights
 nnoremap <silent> <leader>c<space> :nohlsearch<CR>
 
-" copy current directory path to system clipboard
-nnoremap <leader>yd :call setreg("*", expand("%:p:h")) \| echo 'path copied to system clipboard'<CR>
-
 " open input file in horizontal split (cp)
 nnoremap <leader>i<space> :split _input.txt \| resize 8<CR>
 
-" on enter, insert selection if popup is visible or insert newline
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" copy current directory path to system clipboard
+nnoremap <leader>yd :call setreg("*", expand("%:p:h")) \| echo 'path copied to system clipboard'<CR>
 
 " faster scrolling
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+nnoremap <C-e> 2<C-e>
+nnoremap <C-y> 2<C-y>
 
 " sibling of J, to split line at the cursor
 nnoremap S :<C-u>call BreakHere()<CR>
 
-" plugin mappings
+" on enter, insert selection if popup is visible or insert newline
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" insert indented newline
+inoremap <expr> .<CR> InsertMapForEnter()
+" }}}2
+
+" {{{2  plugin mappings
+" neoformat
+nnoremap <space>n<space> :Neoformat<CR>
+
 " ycm
 nmap <leader>yh <Plug>(YCMHover)
 
@@ -343,23 +378,28 @@ nnoremap <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
 " mu-complete
 nnoremap <leader>mu :MUcompleteAutoToggle<CR>
 
-" autocmds
+" undotree
+nnoremap <leader>ut :UndotreeToggle<CR>
+" }}}2
+" }}}
+
+" {{{ autocmds
 " track session if detected, on entering
 augroup TrackSession
     autocmd!
     autocmd VimEnter * :call CheckIfSession()
 augroup END
 
-" autostart mu-complete only for whitelist ft
+" autostart mu-complete only for ycm-whitelisted ft
 augroup AutoStartMUcomplete
     autocmd!
     autocmd FileType * if index(keys(g:ycm_filetype_whitelist), &ft) < 0 | silent execute 'MUcompleteAutoToggle'
 augroup END
 
-" autosave folds
+" autosave and autoload folds
 augroup AutoSaveFolds
-  autocmd!
-  autocmd BufWinLeave .vimrc,.zshrc mkview
-  autocmd BufWinEnter .vimrc,.zshrc silent loadview
+    autocmd!
+    autocmd BufWinLeave .vimrc,.zshrc mkview
+    autocmd BufWinEnter .vimrc,.zshrc silent loadview
 augroup END
-
+" }}}

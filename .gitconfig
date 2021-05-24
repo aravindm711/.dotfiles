@@ -7,10 +7,6 @@
     smudge = git-lfs smudge -- %f
 [core]
     editor = vim
-; [url "ssh://git@github.com/"]
-;     insteadOf = https://github.com/
-; [url "git@github.com:"]
-; 	insteadOf = https://github.com/
 [user]
 	email = aravindmurali711@gmail.com
 	name = Aravind Murali
@@ -21,3 +17,5 @@
 	gpgSign = false
 [tag]
 	forceSignAnnotated = false
+[pull]
+	ff = only

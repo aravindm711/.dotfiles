@@ -1,10 +1,9 @@
-setlocal cindent
 setlocal commentstring=//%s
 
-function Build()
+function! Build()
     let l:output = system("g++ -std=c++17 -o binary " . bufname("%"))
     if l:output == ""
-	let l:output = system("./binary")
+        let l:output = system("./binary")
     endif
     echo l:output
 endfunction

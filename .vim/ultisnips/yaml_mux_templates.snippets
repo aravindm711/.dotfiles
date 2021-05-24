@@ -1,0 +1,18 @@
+snippet py_v1 "Intuitive template" b
+# /Users/aravindmurali/.config/tmuxinator/`!p snip.rv = snip.fn`
+
+name: `!p snip.rv = snip.basename`
+root: ~/${3:Documents/}
+
+windows:
+  - editor:
+      layout: 5a6f,164x52,0,0[164x35,0,0,0,164x16,0,36,2]
+      panes:
+        - workon ${1:`!p snip.rv = snip.basename`} && vim -S ~/.vim/sessions/${2:`!p snip.rv = snip.basename`}.vim
+        - workon $1
+  - proj_dirs:
+      layout: e24b,144x51,0,0{87x51,0,0,1,56x51,88,0,3}
+      panes:
+        - workon $1
+        -
+endsnippet

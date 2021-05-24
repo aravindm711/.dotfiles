@@ -1,4 +1,32 @@
-# custom commands
+# {{{ custom commands
+
+# remove zgen uninstalled plugins
+zclean() {
+    cd
+    list=$(find .zgen -not -path '*/\.*' -type d -mindepth 2 -maxdepth 2 | xargs -n 1 printf '/Users/aravindmurali/%s\n')
+    installed=$(cat ~/.zgen/init.zsh | grep 'source' | cut -d ' ' -f 2 | cut -d '"' -f 2 | \
+        awk -F '/' '{for(i=2;i<NF;++i)printf("/%s", $i);printf("\n");}')
+
+    while read item;
+    do
+        exists=0
+        while read installedItem;
+        do
+            if [ "$item" = "$installedItem" ]; then
+                exists=1
+                break
+            fi
+        done <<< "$installed"
+
+        if [ $exists -eq 0 ]; then
+            echo 'removing' $item
+            rm -rf $item
+        fi
+    done <<< "$list"
+
+    cd -
+}
+
 # cd into selected bookmarked directory
 fcdb() {
     cd "$(cat "$HOME/.cdbookmark" | cut -d "|" -f 2 | fzf --preview="tree -L 2 {}")"
@@ -22,6 +50,7 @@ fkill() {
 
 # update script for tools, using fzf
 fupdate() {
+    local toollist
     toollist=$(printf 'brew\npip3\nzgen' | fzf --multi)
     while read tool;
     do
@@ -30,18 +59,14 @@ fupdate() {
         elif [ "$tool" = "pip3" ]; then
             pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | grep -v 'pip' | xargs -n1 pip3 install -U
         elif [ "$tool" = "zgen" ]; then
-            zgen update && zgen selfupdate
+            zgen update || zgen selfupdate
         fi
     done <<< "$toollist"
     exec zsh
 }
+# }}}
 
-# copy "The Sopranos" magnet link to clipboard
-ss() {
-    echo "magnet:?xt=urn:btih:15D3C9A633CFCF74DDF4466B96C3A5E5D599A035&dn=The+Sopranos+%281999%29+Season+1-6+S01-S06+%281080p+BluRay+x265+HEVC+10bit+AAC+5.1+ImE%29+%5BQxR%5D&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.zer0day.to%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fcoppersurfer.tk%3A6969%2Fannounce" | pbcopy
-}
-
-# key-bindings
+# {{{ key-bindings
 # vim bindings for shell
 bindkey -v
 bindkey '^a' beginning-of-line
@@ -59,15 +84,16 @@ bindkey -s '^g' "dotbare fedit"^j
 # key-binding for fcdb
 zle -N fcdb
 bindkey '^o' fcdb
+# }}}
 
-# conf
+# {{{ conf
 # fzf options
 export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.config/fd/ignore'"
 export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
     --preview 'bat --line-range :500 {}' --preview-window=:hidden \
     --bind='space:toggle-preview' --bind='alt-s:toggle-sort' \
     --bind='alt-a:toggle-all' --bind='alt-0:top' --bind='alt-i:jump' \
-    --bind='ctrl-alt-n:preview-page-down' --bind='ctrl-alt-p:preview-page-up'"
+    --bind='ctrl-alt-d:preview-page-down' --bind='ctrl-alt-u:preview-page-up'"
 
 export FZF_ALT_C_COMMAND="fd -t d --follow --hidden --ignore-file '$HOME/.config/fd/ignore'"
 export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
@@ -79,10 +105,26 @@ export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
 export EDITOR=vim
 export VISUAL=vim
 
+# Less Colors for Man Pages
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
+
 # sfz-prompt
 PROMPT_SFZ_CHAR="࿗"
 
-# zgen
+# command history settings
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=1000000
+SAVEHIST=$HISTSIZE
+
+# }}}
+
+# {{{ zgen
 source "${HOME}/.zgen/zgen.zsh"
 
 # if the init script doesn't exist
@@ -99,17 +141,42 @@ if ! zgen saved; then
 
     zgen save
 fi
+# }}}
 
-# source
+# {{{ source
 # fzf plugin
 source ~/.fzf.zsh
 
 # shell aliases
 source ~/.zsh_aliases
+# }}}
 
-# setopt
+# {{{  setopt
 # limit correction only to commands
 setopt correct
 
+# setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+
 # don't display RPROMPT for previously accepted lines; only display it next to current line
-setopt transient_rprompt
+# setopt transient_rprompt
+# }}}
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/aravindmurali/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/aravindmurali/opt/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/aravindmurali/opt/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/aravindmurali/opt/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
