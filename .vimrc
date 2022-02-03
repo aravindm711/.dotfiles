@@ -17,7 +17,7 @@ function! BuildYCM(info)
     " - name:   name of the plugin
     " - status: 'installed', 'updated', or 'unchanged'
     " - force:  set on PlugInstall! or PlugUpdate!
-    if a:info.status == 'installed' || a:info.force " a:info.status == 'updated'
+    if a:info.status == 'installed' || a:info.force || a:info.status == 'updated'
         !python3 install.py --all
     endif
 endfunction
@@ -27,7 +27,8 @@ call plug#begin('$HOME/.vim/plugged')
 
 " git
 Plug 'junegunn/gv.vim'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
 
 " looks
 Plug 'morhetz/gruvbox'

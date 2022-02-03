@@ -27,3 +27,7 @@ alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/mas
 
 # magnet links
 alias ms='cat ~/Downloads/Illegit/magnets.txt | fzf --exact | cut -d "," -f 2 | pbcopy'
+
+# MSS
+alias msui='python mslib/msui/mss_pyui.py'
+alias msc='python mslib/mscolab/mscolab.py start'

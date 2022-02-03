@@ -51,18 +51,34 @@ fkill() {
 # update script for tools, using fzf
 fupdate() {
     local toollist
-    toollist=$(printf 'brew\npip3\nzgen' | fzf --multi)
+    toollist=$(printf 'brew\nzgen' | fzf --multi)
     while read tool;
     do
         if [ "$tool" = "brew" ]; then
             brew upgrade `brew outdated` && brew cleanup
-        elif [ "$tool" = "pip3" ]; then
-            pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | grep -v 'pip' | xargs -n1 pip3 install -U
+        # elif [ "$tool" = "pip3" ]; then
+        #     pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | grep -v 'pip' | xargs -n1 pip3 install -U
         elif [ "$tool" = "zgen" ]; then
             zgen update || zgen selfupdate
         fi
     done <<< "$toollist"
     exec zsh
+}
+
+# update script for tools, using fzf
+fblack() {
+    if [ $(pwd) = "/Users/aravindmurali" ]; then
+        return -1
+    fi
+    local pys
+    pys=$(fd -t f --hidden --ignore-file $HOME/.config/fd/ignore -e py)
+    echo $pys
+    pys=$(awk '{ printf("%s ",$0) } END { printf "\n" }' <<< "$pys")
+    if [ "$pys" = "" ]; then
+        return -1
+    fi
+    cmd="/usr/local/bin/black --line-length 119 ${pys}"
+    eval $cmd
 }
 # }}}
 
@@ -86,7 +102,17 @@ zle -N fcdb
 bindkey '^o' fcdb
 # }}}
 
-# {{{ conf
+# {{{ variables
+
+# Less Colors for Man Pages
+export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
+export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
+export LESS_TERMCAP_me=$'\E[0m'           # end mode
+export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
+export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
+export LESS_TERMCAP_ue=$'\E[0m'           # end underline
+export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
+
 # fzf options
 export FZF_DEFAULT_COMMAND="fd -t f --follow --hidden --ignore-file '$HOME/.config/fd/ignore'"
 export FZF_DEFAULT_OPTS="--height 40% --layout reverse --info inline --border \
@@ -100,19 +126,6 @@ export FZF_ALT_C_OPTS="--preview 'tree -L 2 {}'"
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_CTRL_T_OPTS="$FZF_DEFAULT_OPTS"
-
-# default editor for the shell
-export EDITOR=vim
-export VISUAL=vim
-
-# Less Colors for Man Pages
-export LESS_TERMCAP_mb=$'\E[01;31m'       # begin blinking
-export LESS_TERMCAP_md=$'\E[01;38;5;74m'  # begin bold
-export LESS_TERMCAP_me=$'\E[0m'           # end mode
-export LESS_TERMCAP_se=$'\E[0m'           # end standout-mode
-export LESS_TERMCAP_so=$'\E[38;5;246m'    # begin standout-mode - info box
-export LESS_TERMCAP_ue=$'\E[0m'           # end underline
-export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 # sfz-prompt
 PROMPT_SFZ_CHAR="࿗"
@@ -131,7 +144,7 @@ source "${HOME}/.zgen/zgen.zsh"
 if ! zgen saved; then
     echo "Creating a zgen save"
 
-    zgen load zdharma/fast-syntax-highlighting
+    zgen load zdharma-continuum/fast-syntax-highlighting
     zgen load zsh-users/zsh-autosuggestions
     zgen load zsh-users/zsh-completions
     zgen load mreinhardt/sfz-prompt.zsh
@@ -164,19 +177,3 @@ setopt SHARE_HISTORY
 # don't display RPROMPT for previously accepted lines; only display it next to current line
 # setopt transient_rprompt
 # }}}
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/aravindmurali/opt/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/Users/aravindmurali/opt/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/aravindmurali/opt/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/Users/aravindmurali/opt/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
