@@ -1,31 +1,17 @@
-" {{{ nocompatible
-if &compatible
-    set nocompatible
-endif
-" }}}
-
 " let mapleader be ' ', ffs.
 let mapleader = ' '
+
+if (has("nvim"))
+  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
 
 " {{{ vim-plug
 
 " vim-plug sets filetype plugin indent on | syntax on
 
 " plugins
-call plug#begin('$HOME/.vim/plugged')
-
-    " git
-    Plug 'junegunn/gv.vim'
-    " Plug 'tpope/vim-fugitive'
-    Plug 'mhinz/vim-signify'
-
-    " looks
-    " Plug 'morhetz/gruvbox'
-    Plug 'cocopon/iceberg.vim'
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'mhinz/vim-startify'
-    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+call plug#begin('~/.local/share/nvim/plugged')
 
     " features
     Plug 'tpope/vim-repeat'
@@ -34,23 +20,31 @@ call plug#begin('$HOME/.vim/plugged')
     Plug 'tpope/vim-unimpaired'
     Plug 'wesQ3/vim-windowswap'
     Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-    Plug 'sotte/presenting.vim'
 
     " files
     Plug '/usr/local/opt/fzf'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
-    Plug 'justinmk/vim-dirvish'
 
     " completion, linting, formatting
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'sbdchd/neoformat'
-    Plug 'dense-analysis/ale'
-    Plug 'lifepillar/vim-mucomplete'
-
-    " snippets
-    Plug 'sirver/ultisnips'
 
     " sessions
     Plug 'tpope/vim-obsession'
+
+    " git
+    Plug 'tpope/vim-fugitive'
+    Plug 'mhinz/vim-signify'
+
+    " looks
+    Plug 'sheerun/vim-polyglot'
+    Plug 'cocopon/iceberg.vim'
+    Plug 'gkeep/iceberg-dark'
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+    Plug 'jeffkreeftmeijer/vim-numbertoggle'
+    Plug 'mhinz/vim-startify'
 
 call plug#end()
 " }}}
@@ -68,14 +62,9 @@ set background=dark
 set noinfercase
 set shortmess+=c
 set belloff+=ctrlg
-set completeopt+=popup
 set completeopt+=menuone,noselect
 
 set vb t_vb=
-
-" popup behaivour
-set previewpopup=height:10,width:60,highlight:PMenuSbar
-set completepopup=height:15,width:60,border:off,highlight:PMenuSbar
 
 " empty character looks
 set list
@@ -86,21 +75,14 @@ set matchpairs+=<:>
 
 " set autochdir                   " Change working directory to opened file
 
-set tf                          " Fast terminal
 set cursorline                  " Highlight the cursor line
-set backspace=indent,eol,start  " Delete over line breaks
 set binary                      " Enable binary support
-set encoding=utf-8              " Use UTF-8 encoding
-set hidden                      " Hide buffers instead of closing them
 set nofoldenable                " Disable folding
 set lazyredraw                  " Use lazy redrawing
 set number                      " Show line numbers
 set relativenumber              " Show relativeline numbers
-set ruler                       " Show ruler
-set showcmd                     " Show current command
 set showmatch                   " Show matching bracket/parenthesis/etc
 set showmode                    " Show current mode
-set wildmenu
 set wildmode=full
 
 " Temp Files
@@ -109,15 +91,11 @@ set noswapfile                  " No swap file
 set nowritebackup               " No write backup
 
 " Search
-set incsearch                   " Incremental search
-set hlsearch                    " Highlight matches
 set ignorecase                  " Case-insensitive search...
 set smartcase                   " ...unless search contains uppercase letter
 set showmatch matchtime=3
 
 " Indentation
-set smarttab                    " Better tabs
-set autoindent                  " Copy indentation from previous line
 set tabstop=8                   " Columns a tab counts for
 set softtabstop=4               " Columns a tab inserts in insert mode
 set shiftwidth=4                " Columns inserted with the reindent operations
@@ -135,14 +113,10 @@ set textwidth=0                 " Turn off physical line wrapping
 set wrapmargin=0                " Turn off physical line wrapping
 set colorcolumn=+1
 
-" Joining
-set nojoinspaces                " Only one space when joining lines
-set formatoptions+=j            " Remove comment leader when joining lines
-
 " Mouse
 set mousehide                   " Hide mouse when typing
 set mouse=a                     " Enable mouse
-set scrolloff=2                 " Keep at least 3 lines above/below
+set scrolloff=3                 " Keep at least 3 lines above/below
 
 " Disable bell
 set visualbell                  " Disable visual bell
@@ -159,10 +133,9 @@ set nospell                     " Enable by default
 " History
 set history=1000                " Remember more commands
 if has('persistent_undo')
-    set undofile                " Persistent undo
-    set undodir=~/.vim/undo     " Location to store undo history
-    set undolevels=1000         " Max number of changes
-    set undoreload=10000        " Max lines to save for undo on a buffer reload
+    set undofile                      " Persistent undo
+    set undolevels=1000               " Max number of changes
+    set undoreload=10000              " Max lines to save for undo on a buffer reload
 endif
 " }}}
 
@@ -173,50 +146,24 @@ let g:neoformat_basic_format_trim = 1
 
 let g:neoformat_python_black = {
             \ 'exe': 'black',
-            \ 'args': ['-', '--line-length 119',],
+            \ 'args': ['-', '--line-length 79',],
             \ 'stdin': 1,
             \ }
 
 let g:neoformat_try_formatprg = 1
-let g:neoformat_enabled_python = ['black', 'isort', 'docformatter']
+let g:neoformat_enabled_python = ['black']
 let g:neoformat_enabled_javascript = ['prettier']
 
-" ycm
-let g:ycm_auto_hover = ''
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_global_extra_conf.py'
-
-" let g:ycm_server_python_interpreter = '/usr/local/Cellar/python@3.8/3.8.5/bin/python3'
-
-let g:ycm_filetype_whitelist = {
-            \ 'c': 1,
-            \ 'cs': 1,
-            \ 'js': 1,
-            \ 'ts': 1,
-            \ 'cpp': 1,
-            \ 'yaml': 1,
-            \ 'python': 1,
-            \ }
-
-" ale
-" let g:ale_lint_on_enter = 0
-let g:ale_lint_on_insert_leave = 0
-let g:ale_lint_on_text_changed = 'never'
-
-let g:ale_linters = {
-            \ 'python': ['pyflakes'],
-            \ 'javascript': ['eslint'],
-            \ }
-
-highlight clear ALEErrorSign
-highlight clear ALEWarningSign
-
-" ultisnips
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsExpandTrigger="<C-s>"
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/ultisnips']
+" startify
+let g:startify_session_dir = '~/.local/share/nvim/sessions/'
+let g:startify_custom_header = [
+\ ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
+\ ' ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
+\ ' ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
+\ ' ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
+\ ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
+\ ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
+\]
 
 " fuzzy file finder
 command! BMDirs call fzf#run(fzf#wrap({
@@ -225,16 +172,17 @@ command! BMDirs call fzf#run(fzf#wrap({
             \ }))
 
 command! SessionRestore call fzf#run(fzf#wrap({
-            \ 'source': 'ls $HOME/.vim/sessions | grep .vim | xargs -I {} -n 1 echo $HOME/.vim/sessions/{}',
+            \ 'source': 'ls ~/.local/share/nvim/sessions | grep .vim | xargs -I {} -n 1 echo ~/.local/share/nvim/sessions/{}',
             \ 'sink': function('SessionRestoreAndTrack'),
             \ }))
 
-command! Dots call fzf#run(fzf#wrap({
-            \ 'source': 'dotbare ls-files --full-name --directory "${DOTBARE_TREE}" | awk -v home="$HOME/" "{print home \$0}"',
-            \ 'sink': 'e',
-            \ }))
-
 let g:fzf_command_prefix = 'FF'
+let g:fzf_layout = {
+            \ 'window': {
+                \ 'width': 0.9,
+                \ 'height': 0.8,
+                \ 'border': 'rounded',
+            \ }}
 let g:fzf_colors =
             \ { 'fg':      ['fg', 'Normal'],
             \ 'bg':      ['bg', 'Normal'],
@@ -243,7 +191,7 @@ let g:fzf_colors =
             \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
             \ 'hl+':     ['fg', 'Statement'],
             \ 'info':    ['fg', 'PreProc'],
-            \ 'border':  ['fg', 'Ignore'],
+            \ 'border':  ['fg', 'Normal'],
             \ 'prompt':  ['fg', 'Conditional'],
             \ 'pointer': ['fg', 'Exception'],
             \ 'marker':  ['fg', 'Keyword'],
@@ -252,30 +200,19 @@ let g:fzf_colors =
 
 " iceberg
 colo iceberg
-
-highlight clear Search
-highlight Search ctermfg=233 ctermbg=109 cterm=bold
-highlight IncSearch ctermfg=233 ctermbg=109 cterm=bold
+hi Comment cterm=italic
 
 " airline
-let g:airline_theme='iceberg'
+let g:airline_theme='icebergDark'
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#dirvish#enabled = 1
+" let g:airline#extensions#dirvish#enabled = 1
 
-" window-swap
-let g:windowswap_map_keys = 0 " prevent default bindings
-
-" netrw
-let g:netrw_altv=1
-let g:netrw_banner=0
-let g:netrw_winsize=10
-let g:netrw_liststyle=3
-let g:netrw_browse_split=2
-" }}}
+" windowswap
+let g:windowswap_map_keys = 0
 
 " {{{ mappings
 " {{{2 general mappings
-nnoremap <M-Space> <Esc>
 
 " quit mappings
 nnoremap <leader>e<space> :q!<CR>
@@ -309,9 +246,6 @@ nnoremap <leader>sn :echo v:this_session<CR>
 " clear highlights
 nnoremap <silent> <leader>c<space> :nohlsearch<CR>
 
-" open input file in horizontal split (cp)
-nnoremap <leader>i<space> :split _input.txt \| resize 8<CR>
-
 " copy current directory path to system clipboard
 nnoremap <leader>yd :call setreg("*", expand("%:p:h")) \| echo 'path copied to system clipboard'<CR>
 
@@ -331,64 +265,72 @@ inoremap <expr> .<CR> InsertMapForEnter()
 
 " {{{2  plugin mappings
 " neoformat
-nnoremap <space>n<space> :Neoformat<CR>
-
-" ycm
-nmap <leader>yh <Plug>(YCMHover)
-
-nnoremap <silent> <leader>gd :YcmCompleter GoTo<CR>
-nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
-
-nnoremap <silent> <leader>yf :YcmCompleter FixIt<CR>
-nnoremap <leader>yr :YcmCompleter RefactorRename<space>
-
-" ale
-nnoremap <silent> <leader>l :ALELint<CR>
+nnoremap <space>n<space> <cmd>Neoformat<CR>
 
 " fuzzy file finder
 nnoremap <leader>pp :FF
-nnoremap <leader>pd :Dots<CR>
-nnoremap <leader>po :BMDirs<CR>
-nnoremap <leader>pf :FFFiles<CR>
-nnoremap <leader>pa :FFLines<CR>
-nnoremap <leader>pc :FFBLines<CR>
-nnoremap <leader>pb :FFBuffers<CR>
+nnoremap <leader>po <cmd>BMDirs<CR>
+nnoremap <leader>pf <cmd>FFFiles<CR>
+nnoremap <leader>pa <cmd>FFLines<CR>
+nnoremap <leader>pc <cmd>FFBLines<CR>
+nnoremap <leader>pb <cmd>FFBuffers<CR>
+nnoremap <leader>pm <cmd>FFMarks<CR>
+nnoremap <leader>pr <cmd>FFRg<CR>
 
-" obsession
+" session obsession
+nnoremap <leader>sr <cmd>SessionRestore<CR>
 nnoremap <leader>sp :Obsession
-nnoremap <leader>sr :SessionRestore<CR>
-nnoremap <leader>ss :Obsession ~/.vim/sessions/<C-D>
+nnoremap <leader>ss :Obsession ~/.local/share/nvim/sessions/
 
 " window-swap
-nnoremap <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
-nnoremap <leader>pw :call WindowSwap#DoWindowSwap()<CR>
-nnoremap <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
-
-" mu-complete
-nnoremap <leader>mu :MUcompleteAutoToggle<CR>
+nnoremap <leader>yw <cmd>call WindowSwap#MarkWindowSwap()<CR>
+nnoremap <leader>pw <cmd>call WindowSwap#DoWindowSwap()<CR>
+nnoremap <leader>ww <cmd>call WindowSwap#EasyWindowSwap()<CR>
 
 " undotree
-nnoremap <leader>ut :UndotreeToggle<CR>
+nnoremap <leader>ut <cmd>UndotreeToggle<CR>
+
+" coc
+inoremap <silent><expr> <c-@> coc#refresh()
+
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> <leader>gd <Plug>(coc-definition)
+nmap <silent> <leader>gy <Plug>(coc-type-definition)
+nmap <silent> <leader>gi <Plug>(coc-implementation)
+nmap <silent> <leader>gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> <leader>K :call <SID>show_documentation()<CR>
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 " }}}2
 " }}}
 
-" {{{ autocmds
+" {{{
 " track session if detected, on entering
 augroup TrackSession
     autocmd!
     autocmd VimEnter * :call CheckIfSession()
 augroup END
 
-" autostart mu-complete only for ycm-whitelisted ft
-augroup AutoStartMUcomplete
-    autocmd!
-    autocmd FileType * if index(keys(g:ycm_filetype_whitelist), &ft) < 0 | silent execute 'MUcompleteAutoToggle'
-augroup END
-
-" autosave and autoload folds
-augroup AutoSaveFolds
-    autocmd!
-    autocmd BufWinLeave .vimrc,.zshrc mkview
-    autocmd BufWinEnter .vimrc,.zshrc silent loadview
-augroup END
+" coc autocmds
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 " }}}
